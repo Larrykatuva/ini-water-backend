@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Zanzibar Escape</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f7f9fc;
+      font-family: 'Noto Sans', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 16px;
+      line-height: 30px;
+      letter-spacing: 0;
+      color: #333;
+
+    }
+
+    .email-container {
+      max-width: 480px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      overflow: hidden;
+      padding: 30px 25px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+      -webkit-background-clip: text;   /* Clips background to text */
+      -webkit-text-fill-color: transparent;  /* Makes text transparent to reveal gradient */
+      background-clip: text;
+      color: transparent;  /* Fallback */
+    }
+
+    .logo {
+      text-align: center;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      color: #0095c2;
+      margin-top: 0;
+    }
+
+    .content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .highlight {
+      color: #ff6b35;
+      font-weight: bold;
+    }
+
+    .quote-box {
+      text-align: center;
+      background: linear-gradient(171.9deg, #FFFFFF 29.33%, #E5F7FF 80.2%);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+
+    .quote-box img {
+      width: 100px;
+      height: 100px;
+      padding-bottom: 10px;
+    }
+
+    .quote-box p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .quote-date {
+      padding-bottom: 10px;
+      color: #555;
+    }
+
+    .quote-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 25px;
+      background-color: #003d9e;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 25px;
+      font-size: 14px;
+    }
+
+    .access-section {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .code {
+      font-size: 28px;
+      font-weight: bold;
+      color: #003d9e;
+      letter-spacing: 3px;
+      margin: 10px 0;
+    }
+
+    .copy-btn {
+      display: inline-block;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: bold;
+      background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 13px;
+      color: #777;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 500px) {
+      .email-container {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="logo">
+    <img src="https://storage.googleapis.com/leizen-frontend.appspot.com/hotel/coverPhoto/1761736377450_c0177b27b52c6fa036444c0bfbab7c091dbcc650.png?GoogleAccessId=firebase-adminsdk-pe7p9%40leizen-frontend.iam.gserviceaccount.com&Expires=16749752400&Signature=Nh2lz5srjTsyZQ4kVZ%2BvWbHRtAMjun8r%2BKj8xda0%2Fqw6w8%2B4flQ%2FQViLUf9Erofp%2F4%2F2QGrXg0UQloA1tBvt4AINuI8c23EQemkwJEc6V9Yk7wzgT3mKs7Fr%2Bmi%2BWMgusJ7LUidKg5wsp6AnYTwqe%2B0EFn8bzSiJMoo2bboLUCtefiDs8SG2tbiYtpRRNhYDGx40Ph9T33d6ReZIi7hGuhgHq1z9MoEMK4V0CWTkxUw96Ch1c0nGsXzc5ODqhygbra%2FbfGmYDzCtUoKlRu6IFCTaZdHRzlUIB5ta%2Fm%2Bb5dTl2xTlBc6OFZzJiX0lSH0o%2Fn7n9hxDuUOjKK9HlTv6oA%3D%3D">
+  </div>
+
+  <h1 class="gradient-text">Your Zanzibar Escape</h1>
+
+  <div class="content">
+    <p>Hello <span class="highlight"><%= username %></span>,</p>
+    <p>We’re excited to share your trip quotation prepared by <span class="highlight">Triply Tours & Travel</span>. You can view all your travel details, including flights, accommodations, activities, and transfers — using the link below.</p>
+  </div>
+
+  <div class="quote-box">
+    <img src="https://storage.googleapis.com/leizen-frontend.appspot.com/hotel/coverPhoto/1761737365742_img.png?GoogleAccessId=firebase-adminsdk-pe7p9%40leizen-frontend.iam.gserviceaccount.com&Expires=16749752400&Signature=e8Khegzq%2FprNlRPtOqwVHlaYP1SvDqD2LoW6F3MGr8CbcbLG5DF66wl%2FzxuQZJeuRa4QpDqhOoa%2F4ln2B6pus2kWjn7xTHz%2BcZqsWC5qtKFJXvMPow1OKWMf7dXGDRU%2FYCXj5FWv8gO%2Bkd8nWOeHVnL4SKkXSBERgdsiFuSTiC4DVbVlPm5hmV8bwX8kVcIs%2FCvKgM6jREOVOOrfYyMqpxqJqlOmjWJGuZzoaDmB4s%2FWH7EwxxUGCSbInlceqXJBZykUUTBPIBkMNacKDIydtWB%2FfaePKiA2izPk2QMvOw6llpd2XaFf2zF%2FzPIHy%2F5EKP6TQRByU4GxTPU6aLK1Fw%3D%3D">
+    <p class="quote-date">Aug 22–29, 2025</p>
+    <p>From Triply Tours & Travel</p>
+    <a href="#" class="quote-btn">View My Quotation</a>
+  </div>
+
+  <div class="access-section">
+    <p>To access your quotation, please enter the following 6-digit access code when prompted:</p>
+    <p><strong>6 Digit Code:</strong></p>
+    <p class="code gradient-text">677-JK7</p>
+    <a href="#" class="copy-btn">Copy</a>
+  </div>
+
+  <div class="footer">
+    <p>If you have any questions or would like to make changes, feel free to reply to this email or contact your travel organizer directly.</p>
+    <p>Best regards,<br>
+      Triply Tours & Travel</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Zanzibar Escape</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 16px;
+            line-height: 30px;
+            letter-spacing: 0;
+            color: #333;
+
+        }
+
+        .email-container {
+            max-width: 480px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 30px 25px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+            -webkit-background-clip: text;   /* Clips background to text */
+            -webkit-text-fill-color: transparent;  /* Makes text transparent to reveal gradient */
+            background-clip: text;
+            color: transparent;  /* Fallback */
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .logo img {
+            height: 60px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: #0095c2;
+            margin-top: 0;
+        }
+
+        .content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .highlight {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        .quote-box {
+            text-align: center;
+            background: linear-gradient(171.9deg, #FFFFFF 29.33%, #E5F7FF 80.2%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .quote-box img {
+            width: 100px;
+            height: 100px;
+            padding-bottom: 10px;
+        }
+
+        .quote-box p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .quote-date {
+            padding-bottom: 10px;
+            color: #555;
+        }
+
+        .quote-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 25px;
+            background-color: #003d9e;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+
+        .access-section {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .code {
+            font-size: 28px;
+            font-weight: bold;
+            color: #003d9e;
+            letter-spacing: 3px;
+            margin: 10px 0;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: bold;
+            background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 500px) {
+            .email-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwJromFWFHBKmfdiQjQLo5iqIv8RLPJJKutA&s">
+    </div>
+
+    <h1 class="gradient-text">Welcome To Inibyte Limited</h1>
+
+    <div class="content">
+        <p>Hello <span class="highlight"><%= username %></span>,</p>
+        <p>You recently requested to reset your password for your <span class="highlight">Inibyte Limited</span> account. Use the code below when prompted on the reset page.</p>
+    </div>
+
+    <div class="access-section">
+        <p><strong>6 Digit Code:</strong></p>
+        <p class="code gradient-text"><%= code %></p>
+        <a href="#" class="copy-btn" style="color: #ffffff">Copy</a>
+        <p>This code is valid for the next <span class="highlight">5 minutes</span></p>
+    </div>
+
+    <div class="content">
+        <p><span class="highlight">If you didn't request this password reset,</span> please ignore this email. Your account is safe.</p>
+    </div>
+
+    <div class="footer">
+        <p>If you have any questions or would like to make changes, feel free to reply to this email or contact Inibyte Limited.</p>
+        <p>Best regards,<br>
+            Inibyte Limited</p>
+    </div>
+</div>
+</body>
+</html>
