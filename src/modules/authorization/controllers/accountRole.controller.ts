@@ -5,7 +5,10 @@ import { ResponsePipe } from '../../shared/pipes/response.pipe';
 import { MessageResDto } from '../../shared/dtos/shared.dto';
 import { AllowedPermissions } from '../decorators/permissions.decorator';
 import { SetPermission } from '../entities/permission.entity';
-import { RequestUser, RequestUserAccount } from '../../authentication/decorators/auth.decorator';
+import {
+  RequestUser,
+  RequestUserAccount,
+} from '../../authentication/decorators/auth.decorator';
 import { Account } from '../../onboarding/entities/account.entity';
 import { RoleService } from '../services/role.service';
 import { User } from '../../authentication/entities/user.entity';

@@ -4,6 +4,8 @@ import {
   OrganizationAccess,
   OrganizationStatus,
 } from '../entities/organization.entity';
+import { UserResDto } from '../../authentication/dtos/user.dtos';
+import { CommonDto } from '../../shared/dtos/shared.dto';
 
 export class OrganizationReqDto {
   @ApiProperty({ type: String })
@@ -37,6 +39,8 @@ export class OrganizationReqDto {
   @ApiProperty({ type: Boolean })
   @IsNotEmpty({ message: 'Access is required' })
   restricted: boolean;
+
+  logo: string;
 }
 
 export class OrganizationResDto extends OrganizationReqDto {
@@ -51,4 +55,18 @@ export class OrganizationResDto extends OrganizationReqDto {
 
   @ApiProperty({ type: String })
   updatedAt: Date;
+}
+
+export class AccountResDto extends CommonDto {
+  @ApiProperty({ type: OrganizationResDto })
+  organization: OrganizationResDto;
+
+  @ApiProperty({ type: UserResDto })
+  user: UserResDto;
+
+  @ApiProperty({ type: Boolean })
+  active: boolean;
+
+  @ApiProperty({ type: Boolean })
+  isStaff: boolean;
 }

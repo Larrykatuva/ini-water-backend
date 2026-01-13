@@ -2,6 +2,7 @@ import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { CommonEntity } from '../../shared/entites/common.entity';
 import { Organization } from './organization.entity';
 import { Account } from './account.entity';
+import { Invite } from './invite.entity';
 
 @Entity()
 export class Staff extends CommonEntity {
@@ -18,6 +19,12 @@ export class Staff extends CommonEntity {
   })
   @Index()
   account: Account;
+
+  @ManyToOne(() => Invite, (invite: Invite) => invite.id, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  invite: Invite;
 
   @Column({ type: String })
   fullName: string;

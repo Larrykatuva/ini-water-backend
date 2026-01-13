@@ -8,6 +8,9 @@ import { SharedModule } from './modules/shared/shared.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
+import { AuthorizationModule } from './modules/authorization/authorization.module';
+import { OnboardingModule } from './modules/onboarding/onboarding.module';
+import { ScripayModule } from './modules/scripay/scripay.module';
 
 @Module({
   imports: [
@@ -19,7 +22,10 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
     ScheduleModule.forRoot(),
     SharedModule,
     NotificationsModule,
+    ScripayModule,
     AuthenticationModule,
+    AuthorizationModule,
+    OnboardingModule,
   ],
   controllers: [],
   providers: [],

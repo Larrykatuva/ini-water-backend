@@ -25,12 +25,12 @@ import { Account } from '../../onboarding/entities/account.entity';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private codeService: CodeService,
-    private configService: ConfigService,
-    private jwtService: JwtService,
-    private eventEmitter: EventEmitter2,
-    private accountService: AccountService,
+    private readonly userService: UserService,
+    private readonly codeService: CodeService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly accountService: AccountService,
   ) {}
 
   decryptPassword(user: User, password: string): boolean {

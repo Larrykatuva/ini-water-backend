@@ -29,6 +29,12 @@ export class Requirement extends CommonEntity {
   @Index()
   organization: Organization;
 
+  @Column()
+  name: string;
+
+  @Column({ nullable: true, type: 'text' })
+  comment: string;
+
   @Column({ enum: RequirementInput })
   input: RequirementInput;
 

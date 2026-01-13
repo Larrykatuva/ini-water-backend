@@ -1,4 +1,11 @@
-import { Controller, Get, HttpStatus, NotFoundException, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { Permission } from '../entities/permission.entity';
 import { PermissionsService } from '../services/permissions.service';
