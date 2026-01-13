@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { SharedModule } from '../shared/shared.module';
 import { AuthenticationModule } from '../authentication/authentication.module';
 
 @Module({
-  imports: [SharedModule, AuthenticationModule],
+  imports: [SharedModule, forwardRef(() => AuthenticationModule)],
   providers: [],
   exports: [],
 })

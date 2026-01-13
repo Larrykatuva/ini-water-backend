@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { SharedModule } from '../shared/shared.module';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
@@ -30,8 +30,8 @@ import { StaffService } from './services/staff.service';
       Station,
     ]),
     SharedModule,
-    AuthenticationModule,
     AuthorizationModule,
+    forwardRef(() => AuthenticationModule),
   ],
   providers: [
     AccountService,
@@ -40,6 +40,6 @@ import { StaffService } from './services/staff.service';
     RequirementService,
     StaffService,
   ],
-  controllers: [AccountService],
+  exports: [AccountService],
 })
 export class OnboardingModule {}

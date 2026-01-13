@@ -7,9 +7,9 @@ export enum OrganizationStatus {
   REJECTED = 'Rejected',
 }
 
-export class OrganizationAccess {
-  PUBLIC = 'Public';
-  PRIVATE = 'Private';
+export enum OrganizationAccess {
+  PUBLIC = 'Public',
+  PRIVATE = 'Private',
 }
 
 @Entity()
