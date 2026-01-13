@@ -8,7 +8,7 @@ import {
   VerifyOtpReqDto,
 } from '../dtos/auth.dtos';
 import {
-  BadRequestException,
+  BadRequestException, forwardRef, Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
