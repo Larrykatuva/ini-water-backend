@@ -22,4 +22,10 @@ export class Station extends CommonEntity {
 
   @Column({ type: Boolean, default: true })
   status: boolean;
+
+  @Column({ type: String, nullable: true })
+  profile: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
 }

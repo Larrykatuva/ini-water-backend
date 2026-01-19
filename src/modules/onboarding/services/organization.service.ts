@@ -32,6 +32,8 @@ export class OrganizationService extends EntityService<Organization> {
 
   async register(
     payload: OrganizationReqDto,
+    user: User,
+    account: Account,
     file?: Express.Multer.File,
   ): Promise<MessageResDto> {
     if (await this.filter({ code: payload.code }))
@@ -55,7 +57,10 @@ export class OrganizationService extends EntityService<Organization> {
     file?: Express.Multer.File,
   ): Promise<MessageResDto> {
     const organization = await this.filter(
-      deepMerge(this.organizationFilter(user, account), { id: id }),
+      deepMerge<Organization>(
+        { id: id },
+        this.organizationFilter(user, account),
+      ),
     );
     if (!organization) throw new BadRequestException('Organization not found!');
 

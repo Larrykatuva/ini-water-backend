@@ -16,6 +16,16 @@ import { InviteService } from './services/invite.service';
 import { OrganizationService } from './services/organization.service';
 import { RequirementService } from './services/requirement.service';
 import { StaffService } from './services/staff.service';
+import { StationService } from './services/station.service';
+import { AttendantService } from './services/attendant.service';
+import { KycService } from './services/kyc.service';
+import { AccountController } from './controllers/account.controller';
+import { OrganizationController } from './controllers/organization.controller';
+import { StaffController } from './controllers/staff.controller';
+import { InviteController } from './controllers/invite.controller';
+import { StationController } from './controllers/station.controller';
+import { AttendantController } from './controllers/attendant.controller';
+import { RequirementController } from './controllers/requirement.controller';
 
 @Module({
   imports: [
@@ -34,11 +44,23 @@ import { StaffService } from './services/staff.service';
     forwardRef(() => AuthenticationModule),
   ],
   providers: [
+    OrganizationService,
     AccountService,
     InviteService,
-    OrganizationService,
     RequirementService,
     StaffService,
+    StationService,
+    AttendantService,
+    KycService,
+  ],
+  controllers: [
+    OrganizationController,
+    InviteController,
+    StaffController,
+    RequirementController,
+    AccountController,
+    StationController,
+    AttendantController,
   ],
   exports: [AccountService],
 })

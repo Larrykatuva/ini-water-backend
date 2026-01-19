@@ -35,9 +35,12 @@ export class InviteService extends EntityService<Invite> {
     payload: InviteReqDto,
   ): Promise<MessageResDto> {
     const organization = await this.organizationService.filter(
-      deepMerge(this.organizationService.organizationFilter(user, account), {
-        id: payload.organizationId,
-      }),
+      deepMerge(
+        {
+          id: payload.organizationId,
+        },
+        this.organizationService.organizationFilter(user, account),
+      ),
     );
     if (!organization) throw new BadRequestException('Organization not found');
 

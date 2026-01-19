@@ -29,14 +29,12 @@ export enum SetPermission {
   ConfigureSystemSettings = 'Configure system settings',
 
   /**
-   * Billing permissions
+   * Onboarding permissions
    */
-  ConfigurePackages = 'Configure packages',
-
-  /**
-   * Sending permissions
-   */
-  ManageShortCodes = 'Manage short codes',
+  ManageOrganization = 'Manage organizations',
+  ManageStations = 'Manage stations',
+  ManageAttendants = 'Manage attendants',
+  ManageRequirements = 'Manage requirements',
 }
 
 export enum AuthType {
@@ -71,11 +69,11 @@ export const PermissionSets: {
     type: AuthType.Internal,
   },
 
-  // Billing permissions
-  { permission: SetPermission.ConfigurePackages, type: AuthType.Internal },
-
-  // Sending permissions
-  { permission: SetPermission.ManageShortCodes, type: AuthType.External },
+  // Onboarding permissions
+  { permission: SetPermission.ManageOrganization, type: AuthType.Internal },
+  { permission: SetPermission.ManageStations, type: AuthType.External },
+  { permission: SetPermission.ManageAttendants, type: AuthType.External },
+  { permission: SetPermission.ManageRequirements, type: AuthType.External },
 ];
 
 @Entity()

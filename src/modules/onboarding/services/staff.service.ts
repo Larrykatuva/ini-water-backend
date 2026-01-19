@@ -46,8 +46,8 @@ export class StaffService extends EntityService<Staff> {
 
     const organization = await this.organizationService.filter(
       deepMerge(
-        this.organizationService.organizationFilter(requestUser, account),
         { id: payload.organizationId },
+        this.organizationService.organizationFilter(requestUser, account),
       ),
     );
     if (!organization) throw new BadRequestException('Organization not found');
@@ -110,7 +110,7 @@ export class StaffService extends EntityService<Staff> {
     file?: Express.Multer.File,
   ): Promise<MessageResDto> {
     const staff = await this.filter(
-      deepMerge(this.staffFilter(user, account), { id: id }),
+      deepMerge({ id: id }, this.staffFilter(user, account)),
     );
     if (!staff) throw new BadRequestException('Staff not found');
 

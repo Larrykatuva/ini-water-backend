@@ -27,7 +27,5 @@ import { ScripayModule } from './modules/scripay/scripay.module';
     AuthorizationModule,
     OnboardingModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
