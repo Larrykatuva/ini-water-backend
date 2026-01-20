@@ -7,6 +7,10 @@ import { Role } from './modules/authorization/entities/role.entity';
 import { RolePermission } from './modules/authorization/entities/rolePermission.entity';
 import { Permission } from './modules/authorization/entities/permission.entity';
 import { Organization } from './modules/onboarding/entities/organization.entity';
+import { countrySeeder } from './modules/settings/seeders/country.seeder';
+import { Provider } from './modules/settings/entities/provider.entity';
+import { Country } from './modules/settings/entities/country.entity';
+import { providersSeeder } from './modules/settings/seeders/providers.seeder';
 
 dotenv.config(); // Load .env
 
@@ -18,13 +22,15 @@ const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: true,
-  entities: [Organization, Role, RolePermission, Permission],
+  entities: [Organization, Role, RolePermission, Permission, Country, Provider],
 });
 
 AppDataSource.initialize()
   .then(async (dataSource: DataSource) => {
     await seedPermissions(dataSource);
     await seedRoles(dataSource);
+    await countrySeeder(dataSource);
+    await providersSeeder(dataSource);
     console.log('Seeding complete');
     process.exit(0);
   })
