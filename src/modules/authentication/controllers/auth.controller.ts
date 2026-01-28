@@ -1,16 +1,20 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
   Get,
   HttpStatus,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ResponsePipe } from '../../shared/pipes/response.pipe';
 import { MessageResDto } from '../../shared/dtos/shared.dto';
 import {
+  AuthCodeReqDto,
+  GoogleAuthResDto,
   LoginReqDto,
   LoginResDto,
   RegisterReqDto,
@@ -22,11 +26,16 @@ import { RequestToken, RequestUser } from '../decorators/auth.decorator';
 import { AuthGuard } from '../guards/auth.guard';
 import { Account } from '../../onboarding/entities/account.entity';
 import { User } from '../entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { GoogleService } from '../services/google.service';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly googleService: GoogleService,
+  ) {}
 
   @Post('register')
   @ResponsePipe(MessageResDto, HttpStatus.CREATED)
@@ -72,5 +81,29 @@ export class AuthController {
     @Body() payload: SwitchAccountDto,
   ): Promise<MessageResDto | LoginResDto> {
     return await this.authService.switchAccount(token, payload.accountId);
+  }
+
+  @Post('profile')
+  @ResponsePipe(MessageResDto, HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('profile'))
+  @ApiConsumes('multipart/form-data')
+  async uploadProfile(
+    @RequestUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<MessageResDto> {
+    return await this.authService.uploadProfile(user, file);
+  }
+
+  @Get('google/auth-url')
+  @ResponsePipe(GoogleAuthResDto, HttpStatus.OK)
+  getGoogleAuthUrl(): GoogleAuthResDto {
+    return { url: this.googleService.getAuthUrl() };
+  }
+
+  @Post('google/code')
+  @ResponsePipe(LoginResDto, HttpStatus.OK)
+  async processGoogleCode(@Body() payload: AuthCodeReqDto) {
+    return await this.authService.googleAuth(payload.code);
   }
 }

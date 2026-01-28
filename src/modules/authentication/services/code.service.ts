@@ -17,21 +17,24 @@ export class CodeService extends EntityService<Code> {
   generateCode(length: number = 6): string {
     const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
     let code: string = '';
     for (let i: number = 0; i < length; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+
     return code.toUpperCase();
   }
 
   async generateOtp(
     user: User,
     purpose: Purpose,
-    expiry: number = 60,
+    expiry: number = 11100,
   ): Promise<Code> {
     const code: string = this.generateCode();
     if (await this.filter({ code: code, purpose: purpose }))
       return await this.generateOtp(user, purpose);
+
     return await this.save({
       user: user,
       code: code,
@@ -48,9 +51,11 @@ export class CodeService extends EntityService<Code> {
     if (!otp) throw new BadRequestException('Invalid Otp code');
     if (otp.used)
       throw new BadRequestException('Otp code has already been used');
-    if (otp.expiry.getTime() >= new Date().getTime())
+    if (otp.expiry.getTime() < new Date().getTime())
       throw new BadRequestException('Otp code has already expired');
+
     await this.update({ id: otp.id }, { used: true });
+
     return otp.user;
   }
 }

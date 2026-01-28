@@ -20,6 +20,6 @@ export class AccountService extends EntityService<Account> {
 
   accountsFilter(user: User, account: Account): FindOptionsWhere<Account> {
     if (user.isStaff) return {};
-    return { organization: { id: account.organization.id } };
+    return { organization: { id: account?.organization.id } };
   }
 }

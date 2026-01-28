@@ -12,7 +12,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { User } from '../entities/user.entity';
+import { SignInMethod, User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Purpose } from '../entities/code.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -21,6 +21,9 @@ import { MessageResDto } from '../../shared/dtos/shared.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AccountService } from '../../onboarding/services/account.service';
 import { Account } from '../../onboarding/entities/account.entity';
+import { StorageService } from '../../shared/services/storage.service';
+import { GoogleService } from './google.service';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +34,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly eventEmitter: EventEmitter2,
     private readonly accountService: AccountService,
+    private readonly storageService: StorageService,
+    private readonly googleService: GoogleService,
   ) {}
 
   decryptPassword(user: User, password: string): boolean {
@@ -171,15 +176,19 @@ export class AuthService {
     };
   }
 
-  async login(payload: LoginReqDto): Promise<LoginResDto | MessageResDto> {
+  async login(
+    payload: LoginReqDto,
+    signInMethod = SignInMethod.SignUp,
+  ): Promise<LoginResDto | MessageResDto> {
     const user = await this.userService.getUserByUsername(payload.username);
     if (!user) throw new BadRequestException('Invalid username or password');
     if (payload.username === user.phoneNumber && !user.phoneVerified)
       throw new BadRequestException('Phone number is not verified');
     if (payload.username === user.email && !user.emailVerified)
       throw new BadRequestException('Email is not verified');
-    if (!this.decryptPassword(user, payload.password))
-      throw new BadRequestException('Invalid login details');
+    if (signInMethod === SignInMethod.SignUp)
+      if (!this.decryptPassword(user, payload.password))
+        throw new BadRequestException('Invalid login details');
     user.password = '';
 
     if (user.twoFactorEnabled) {
@@ -253,5 +262,46 @@ export class AuthService {
       console.log(err);
       throw new UnauthorizedException('Invalid or expired token');
     }
+  }
+
+  async uploadProfile(
+    user: User,
+    file: Express.Multer.File,
+  ): Promise<MessageResDto> {
+    if (!file) throw new BadRequestException('Profile is required');
+
+    user.profile = this.storageService.getFileName(file.originalname);
+    await this.storageService.uploadFile(file, user.profile);
+
+    await this.userService.update({ id: user.id }, { profile: user.profile });
+
+    return { message: 'Profile uploaded successfully' };
+  }
+
+  async googleAuth(code: string): Promise<MessageResDto | LoginResDto> {
+    const googleInfo = await this.googleService.getUserInfo(code);
+
+    let user = await this.userService.filter({ email: googleInfo.email });
+
+    if (!user) {
+      user = await this.userService.save({
+        email: googleInfo.email,
+        emailVerified: googleInfo.email_verified,
+        verified: googleInfo.email_verified,
+        fullName: googleInfo.name,
+        profile: googleInfo.picture,
+        signInMethod: SignInMethod.Google,
+      });
+    } else {
+      await this.userService.update(
+        { id: user.id, profile: IsNull() },
+        { profile: googleInfo.picture },
+      );
+    }
+
+    return await this.login(
+      { username: user.email, password: user.password },
+      SignInMethod.Google,
+    );
   }
 }

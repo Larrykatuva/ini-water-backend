@@ -80,4 +80,26 @@ export class AccountController {
 
     return exists;
   }
+
+  @Get('my-accounts')
+  @PaginatedResponsePipe(AccountResDto, HttpStatus.OK)
+  @SearchFields(
+    Account.name,
+    'organization__id',
+    'organization__code',
+    'organization__name',
+  )
+  @OrderingFields(Account.name, 'id', 'createdAt')
+  async getUserAccounts(
+    @RequestUser() user: User,
+    @PaginationDecorator() pagination: DefaultPagination,
+    @QueryDecorator() query: object,
+    @OrderingDecorator() ordering: object,
+  ): Promise<[Account[], number]> {
+    return await this.accountService.paginatedFilter(
+      pagination,
+      deepMerge(query, { user: { id: user.id } }),
+      { order: ordering, relations: { user: true, organization: true } },
+    );
+  }
 }

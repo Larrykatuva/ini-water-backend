@@ -68,7 +68,7 @@ export class AttendantController {
   }
 
   @Post('attendants')
-  @ResponsePipe(AttendantResDto, HttpStatus.OK)
+  @ResponsePipe(MessageResDto, HttpStatus.OK)
   @AllowedPermissions(SetPermission.ManageAttendants)
   async addAttendant(
     @RequestUser() user: User,

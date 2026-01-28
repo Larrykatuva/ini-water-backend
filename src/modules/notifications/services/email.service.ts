@@ -95,7 +95,7 @@ export class EmailService {
       email: payload.email,
       subject: payload.subject,
       context: payload.context,
-      template: 'verifyAccount.ejs',
+      template: 'auth/verifyAccount.ejs',
     });
   }
 
@@ -105,7 +105,7 @@ export class EmailService {
       email: payload.email,
       subject: payload.subject,
       context: payload.context,
-      template: 'accountReset.ejs',
+      template: 'auth/accountReset.ejs',
     });
   }
 
@@ -115,7 +115,7 @@ export class EmailService {
       email: payload.email,
       subject: payload.subject,
       context: payload.context,
-      template: 'accountLogin.ejs',
+      template: 'auth/accountLogin.ejs',
     });
   }
 

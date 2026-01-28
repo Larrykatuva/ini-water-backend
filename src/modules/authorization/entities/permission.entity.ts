@@ -35,6 +35,13 @@ export enum SetPermission {
   ManageStations = 'Manage stations',
   ManageAttendants = 'Manage attendants',
   ManageRequirements = 'Manage requirements',
+
+  /**
+   * Billing permissions
+   */
+  SetPricing = 'Set pricing',
+  SetReading = 'Set meter reading',
+  ConfigureSettlement = 'Configure settlement accounts',
 }
 
 export enum AuthType {
@@ -74,6 +81,11 @@ export const PermissionSets: {
   { permission: SetPermission.ManageStations, type: AuthType.External },
   { permission: SetPermission.ManageAttendants, type: AuthType.External },
   { permission: SetPermission.ManageRequirements, type: AuthType.External },
+
+  // Billing permissions
+  { permission: SetPermission.SetPricing, type: AuthType.External },
+  { permission: SetPermission.SetReading, type: AuthType.External },
+  { permission: SetPermission.ConfigureSettlement, type: AuthType.Internal },
 ];
 
 @Entity()

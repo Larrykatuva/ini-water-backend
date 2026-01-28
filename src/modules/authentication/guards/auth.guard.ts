@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { Request } from 'express';
+import { UserService } from '../services/user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
-  canActivate(context: ExecutionContext): boolean {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
     const authHeader = request.headers['authorization'];
@@ -24,7 +28,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Authorization token is required');
 
     const user = this.authService.decodeToken(token);
-    request['user'] = user;
+    request['user'] = await this.userService.filter({ id: user.id });
     request['token'] = token;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     request['account'] = user['account'];

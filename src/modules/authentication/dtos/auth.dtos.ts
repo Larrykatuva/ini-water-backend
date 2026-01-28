@@ -75,3 +75,23 @@ export class SwitchAccountDto {
   @IsNotEmpty({ message: 'Account is required' })
   accountId: number;
 }
+
+export class GoogleAuthResDto {
+  @ApiProperty({ type: String, required: true })
+  url: string;
+}
+
+export enum AuthDevice {
+  Web = 'Web',
+  Android = 'Android',
+  iOS = 'iOS',
+}
+
+export class AuthCodeReqDto {
+  @ApiProperty({ type: String, required: true })
+  @IsNotEmpty({ message: 'Code is required' })
+  code: string;
+
+  @ApiProperty({ type: String, default: AuthDevice.Web })
+  device: AuthDevice.Web;
+}
