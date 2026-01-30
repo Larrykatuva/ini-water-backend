@@ -62,6 +62,6 @@ import { RequirementController } from './controllers/requirement.controller';
     StationController,
     AttendantController,
   ],
-  exports: [AccountService],
+  exports: [AccountService, OrganizationService, StationService],
 })
 export class OnboardingModule {}

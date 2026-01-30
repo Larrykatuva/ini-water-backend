@@ -19,7 +19,7 @@ export class StationReqDto {
 
   @ApiProperty({ required: true })
   @IsNotEmpty({ message: 'Location is required' })
-  location: Record<string, string>;
+  location: string;
 
   @ApiProperty({ type: String, required: true })
   description: string;
@@ -38,7 +38,7 @@ export class StationUpdateDto {
   code: string;
 
   @ApiProperty({ required: true })
-  location: Record<string, string>;
+  location: string;
 
   @ApiProperty({ type: String, required: true })
   status: boolean;

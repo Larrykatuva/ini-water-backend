@@ -46,9 +46,17 @@ export class LoginReqDto {
   password: string;
 }
 
+export enum TokenType {
+  AccessToken = 'AccessToken',
+  RefreshToken = 'RefreshToken',
+}
+
 export class LoginResDto {
   @ApiProperty({ type: String })
   accessToken: string;
+
+  @ApiProperty({ type: String })
+  refreshToken: string;
 
   @ApiProperty({ type: UserResDto })
   user: User;
@@ -94,4 +102,10 @@ export class AuthCodeReqDto {
 
   @ApiProperty({ type: String, default: AuthDevice.Web })
   device: AuthDevice.Web;
+}
+
+export class RefreshTokenReqDto {
+  @ApiProperty({ type: String, required: true })
+  @IsNotEmpty({ message: 'refreshToken is required' })
+  refreshToken: string;
 }

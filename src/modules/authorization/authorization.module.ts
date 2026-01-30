@@ -35,6 +35,6 @@ import { PermissionController } from './controllers/permission.controller';
     RolePermissionsController,
     AccountRoleController,
   ],
-  exports: [],
+  exports: [RoleService, AccountRoleService],
 })
 export class AuthorizationModule {}

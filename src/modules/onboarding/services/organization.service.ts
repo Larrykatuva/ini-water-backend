@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { EntityService } from '../../shared/services/entity.service';
 import { Organization } from '../entities/organization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,10 +11,13 @@ import { Repository } from 'typeorm/repository/Repository';
 import { OrganizationReqDto } from '../dtos/organization.dto';
 import { MessageResDto } from '../../shared/dtos/shared.dto';
 import { User } from '../../authentication/entities/user.entity';
-import { Account } from '../entities/account.entity';
+import { Account, AccountStatus } from '../entities/account.entity';
 import { FindOptionsWhere } from 'typeorm';
 import { deepMerge } from '../../shared/services/utility.service';
 import { StorageService } from '../../shared/services/storage.service';
+import { AccountService } from './account.service';
+import { StaffService } from './staff.service';
+import { RoleService } from '../../authorization/services/role.service';
 
 @Injectable()
 export class OrganizationService extends EntityService<Organization> {
@@ -17,6 +25,10 @@ export class OrganizationService extends EntityService<Organization> {
     @InjectRepository(Organization)
     private readonly organizationRepository: Repository<Organization>,
     private readonly storageService: StorageService,
+    private readonly accountService: AccountService,
+    @Inject(forwardRef(() => StaffService))
+    private readonly staffService: StaffService,
+    private readonly roleService: RoleService,
   ) {
     super();
     this.setRepository(this.organizationRepository);
@@ -27,13 +39,12 @@ export class OrganizationService extends EntityService<Organization> {
     account: Account,
   ): FindOptionsWhere<Organization> {
     if (user.isStaff) return {};
-    return { id: account.organization.id };
+    return { id: account?.organization.id };
   }
 
   async register(
     payload: OrganizationReqDto,
     user: User,
-    account: Account,
     file?: Express.Multer.File,
   ): Promise<MessageResDto> {
     if (await this.filter({ code: payload.code }))
@@ -44,7 +55,27 @@ export class OrganizationService extends EntityService<Organization> {
       await this.storageService.uploadFile(file, payload.logo);
     }
 
-    await this.save(payload);
+    const organization = await this.save(payload);
+
+    if (!user.isStaff) {
+      const account = await this.accountService.save({
+        organization: organization,
+        user: user,
+        status: AccountStatus.APPROVED,
+        isStaff: true,
+        active: true,
+      });
+
+      await this.staffService.save({
+        organization: organization,
+        account: account,
+        fullName: user.fullName,
+        title: 'Account Admin',
+        profile: user.profile,
+      });
+
+      await this.roleService.assignDefaultRole(account);
+    }
 
     return { message: 'Successfully registered!' };
   }

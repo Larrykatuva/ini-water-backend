@@ -38,7 +38,7 @@ export class User extends CommonEntity {
   @Column({ type: Boolean, default: false })
   twoFactorEnabled: boolean;
 
-  @Column({ type: String, nullable: true })
+  @Column({ type: String, nullable: true, select: false })
   password: string;
 
   @Column({ type: Boolean, default: false })

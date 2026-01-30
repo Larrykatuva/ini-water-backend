@@ -16,7 +16,7 @@ import {
   AuthCodeReqDto,
   GoogleAuthResDto,
   LoginReqDto,
-  LoginResDto,
+  LoginResDto, RefreshTokenReqDto,
   RegisterReqDto,
   RequestCodeReqDto,
   SwitchAccountDto,
@@ -105,5 +105,11 @@ export class AuthController {
   @ResponsePipe(LoginResDto, HttpStatus.OK)
   async processGoogleCode(@Body() payload: AuthCodeReqDto) {
     return await this.authService.googleAuth(payload.code);
+  }
+
+  @Post('refresh-token')
+  @ResponsePipe(LoginResDto, HttpStatus.OK)
+  async refreshToken(@Body() payload: RefreshTokenReqDto) {
+    return await this.authService.refreshToken(payload.refreshToken);
   }
 }

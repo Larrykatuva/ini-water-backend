@@ -1,6 +1,7 @@
 import { CommonEntity } from '../../shared/entites/common.entity';
 import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { Organization } from './organization.entity';
+import * as constants from 'node:constants';
 
 @Entity()
 @Unique(['name', 'organization'])
@@ -17,8 +18,8 @@ export class Station extends CommonEntity {
   @Column({ type: String })
   code: string;
 
-  @Column({ type: 'json' })
-  location: Record<string, string>;
+  @Column({ type: String })
+  location: string;
 
   @Column({ type: Boolean, default: true })
   status: boolean;

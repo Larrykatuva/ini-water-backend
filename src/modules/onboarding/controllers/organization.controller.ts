@@ -74,16 +74,10 @@ export class OrganizationController {
   @ApiConsumes('multipart/form-data')
   async registerOrganization(
     @RequestUser() user: User,
-    @RequestUserAccount() account: Account,
     @Body() payload: OrganizationReqDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<MessageResDto> {
-    return await this.organizationService.register(
-      payload,
-      user,
-      account,
-      file,
-    );
+    return await this.organizationService.register(payload, user, file);
   }
 
   @Get('organization/:id')

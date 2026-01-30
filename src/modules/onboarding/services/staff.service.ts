@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { EntityService } from '../../shared/services/entity.service';
 import { Staff } from '../entities/staff.entity';
 import { Repository } from 'typeorm/repository/Repository';
@@ -22,6 +27,7 @@ export class StaffService extends EntityService<Staff> {
     private readonly staffRepository: Repository<Staff>,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
+    @Inject(forwardRef(() => OrganizationService))
     private readonly organizationService: OrganizationService,
     private readonly accountService: AccountService,
     private readonly eventEmitter: EventEmitter2,

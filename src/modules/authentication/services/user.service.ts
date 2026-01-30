@@ -16,6 +16,23 @@ export class UserService extends EntityService<User> {
   async getUserByUsername(username: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: [{ email: username }, { phoneNumber: username }],
+      select: [
+        'id',
+        'email',
+        'phoneNumber',
+        'fullName',
+        'profile',
+        'emailVerified',
+        'verified',
+        'active',
+        'phoneVerified',
+        'twoFactorEnabled',
+        'password',
+        'isStaff',
+        'signInMethod',
+        'createdAt',
+        'updatedAt',
+      ],
     });
   }
 }

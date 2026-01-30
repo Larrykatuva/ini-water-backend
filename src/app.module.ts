@@ -12,6 +12,7 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { ScripayModule } from './modules/scripay/scripay.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { BillingModule } from './modules/billing/billing.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     AuthenticationModule,
     AuthorizationModule,
     OnboardingModule,
+    BillingModule,
   ],
 })
 export class AppModule {}

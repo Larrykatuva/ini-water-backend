@@ -21,6 +21,9 @@ import { Staff } from '../modules/onboarding/entities/staff.entity';
 import { Station } from '../modules/onboarding/entities/station.entity';
 import { Country } from '../modules/settings/entities/country.entity';
 import { Provider } from '../modules/settings/entities/provider.entity';
+import { Pricing } from '../modules/billing/entities/pricing.entity';
+import { Reading } from '../modules/billing/entities/reading.entities';
+import { Settlement } from '../modules/billing/entities/settlement.entity';
 
 /**
  * DatabaseConfig class for configuring a read-only PostgreSQL database connection.
@@ -60,6 +63,9 @@ class DatabaseConfig implements TypeOrmOptionsFactory {
         Station,
         Country,
         Provider,
+        Pricing,
+        Reading,
+        Settlement,
       ],
       synchronize: true,
     };

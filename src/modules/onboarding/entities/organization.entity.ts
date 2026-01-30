@@ -28,7 +28,7 @@ export class Organization extends CommonEntity {
   county: string;
 
   @Column({ type: String })
-  subCountry: string;
+  subCounty: string;
 
   @Column({ type: String })
   logo: string;
@@ -36,10 +36,10 @@ export class Organization extends CommonEntity {
   @Column({ type: String })
   area: string;
 
-  @Column({ enum: OrganizationStatus })
+  @Column({ enum: OrganizationStatus, default: OrganizationStatus.PENDING })
   status: OrganizationStatus;
 
-  @Column({ enum: OrganizationAccess })
+  @Column({ enum: OrganizationAccess, default: OrganizationAccess.PUBLIC })
   @Index()
   access: OrganizationAccess;
 

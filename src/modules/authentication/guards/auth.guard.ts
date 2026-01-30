@@ -7,6 +7,7 @@ import {
 import { AuthService } from '../services/auth.service';
 import { Request } from 'express';
 import { UserService } from '../services/user.service';
+import { TokenType } from '../dtos/auth.dtos';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -28,6 +29,10 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Authorization token is required');
 
     const user = this.authService.decodeToken(token);
+
+    if (user['type'] !== TokenType.AccessToken)
+      throw new UnauthorizedException('Invalid token');
+
     request['user'] = await this.userService.filter({ id: user.id });
     request['token'] = token;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

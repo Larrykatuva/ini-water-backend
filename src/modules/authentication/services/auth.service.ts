@@ -5,6 +5,7 @@ import {
   LoginResDto,
   RegisterReqDto,
   RequestCodeReqDto,
+  TokenType,
   VerifyOtpReqDto,
 } from '../dtos/auth.dtos';
 import {
@@ -156,23 +157,41 @@ export class AuthService {
     }
     await this.userService.update({ id: user.id }, userUpdate);
     if (payload.purpose === Purpose.AccountLogin) {
-      return this.generateUserToken(user);
+      return this.generateUserToken(
+        user,
+        await this.accountService.filter(
+          { user: { id: user.id } },
+          { relations: { user: true, organization: true } },
+        ),
+      );
     }
     return { message: 'Code verified successfully' };
   }
 
-  generateUserToken(user: User, account?: Account): LoginResDto {
+  generateUserToken(user: User, account: Account | null): LoginResDto {
     return {
       accessToken: this.jwtService.sign(
-        { ...user },
+        {
+          id: user.id,
+          user: user,
+          account: account,
+          type: TokenType.AccessToken,
+        },
         {
           expiresIn: this.configService.get<string>('TOKEN_EXPIRY'),
           secret: this.configService.get<string>('PRIVATE_KEY'),
         },
       ),
+      refreshToken: this.jwtService.sign(
+        { id: user.id, accountId: account?.id, type: TokenType.RefreshToken },
+        {
+          expiresIn: this.configService.get<string>('REFRESH_EXPIRY'),
+          secret: this.configService.get<string>('PRIVATE_KEY'),
+        },
+      ),
       user: user,
       expiresIn: this.configService.get<string>('TOKEN_EXPIRY') as string,
-      account: account,
+      account: account ? account : undefined,
     };
   }
 
@@ -221,6 +240,8 @@ export class AuthService {
       account = accounts[0];
     }
 
+    console.log(account);
+
     return this.generateUserToken(user, account);
   }
 
@@ -238,7 +259,10 @@ export class AuthService {
     token: string,
     accountId: number,
   ): Promise<LoginResDto | MessageResDto> {
-    const user = this.decodeToken(token);
+    const tokenUser = this.decodeToken(token);
+
+    const user = await this.userService.filter({ id: tokenUser.id });
+    if (!user) throw new BadRequestException('failed to switch user accounts');
 
     const account = await this.accountService.filter(
       {
@@ -259,8 +283,10 @@ export class AuthService {
         secret: process.env.PRIVATE_KEY,
       });
     } catch (err) {
-      console.log(err);
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        err['message'] ? err['message'] : 'Invalid or expired token',
+      );
     }
   }
 
@@ -297,11 +323,38 @@ export class AuthService {
         { id: user.id, profile: IsNull() },
         { profile: googleInfo.picture },
       );
+
+      if (!user.emailVerified || !user.verified) {
+        await this.userService.update(
+          { id: user.id },
+          {
+            emailVerified: googleInfo.email_verified,
+            verified: googleInfo.email_verified,
+            signInMethod: SignInMethod.Google,
+          },
+        );
+      }
     }
 
     return await this.login(
       { username: user.email, password: user.password },
       SignInMethod.Google,
     );
+  }
+
+  async refreshToken(token: string): Promise<MessageResDto | LoginResDto> {
+    const tokenUser = this.decodeToken(token);
+
+    const user = await this.userService.filter({ id: tokenUser.id });
+    if (!user) throw new BadRequestException('Invalid or expired token');
+
+    const account = await this.accountService.filter(
+      {
+        id: tokenUser['accountId'] as number,
+      },
+      { relations: { user: true, organization: true } },
+    );
+
+    return this.generateUserToken(user, account);
   }
 }
