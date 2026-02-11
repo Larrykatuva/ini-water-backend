@@ -35,6 +35,8 @@ export enum SetPermission {
   ManageStations = 'Manage stations',
   ManageAttendants = 'Manage attendants',
   ManageRequirements = 'Manage requirements',
+  UploadKyc = 'Upload Kyc',
+  ApproveKyc = 'Approve Kyc',
 
   /**
    * Billing permissions
@@ -81,6 +83,8 @@ export const PermissionSets: {
   { permission: SetPermission.ManageStations, type: AuthType.External },
   { permission: SetPermission.ManageAttendants, type: AuthType.External },
   { permission: SetPermission.ManageRequirements, type: AuthType.External },
+  { permission: SetPermission.UploadKyc, type: AuthType.External },
+  { permission: SetPermission.ApproveKyc, type: AuthType.Internal },
 
   // Billing permissions
   { permission: SetPermission.SetPricing, type: AuthType.External },

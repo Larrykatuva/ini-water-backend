@@ -26,6 +26,9 @@ import { InviteController } from './controllers/invite.controller';
 import { StationController } from './controllers/station.controller';
 import { AttendantController } from './controllers/attendant.controller';
 import { RequirementController } from './controllers/requirement.controller';
+import { KycController } from './controllers/kyc.controller';
+import { KycStatus } from './entities/kycStatus.entity';
+import { KycStatusService } from './services/kycStatus.service';
 
 @Module({
   imports: [
@@ -38,6 +41,7 @@ import { RequirementController } from './controllers/requirement.controller';
       Requirement,
       Staff,
       Station,
+      KycStatus,
     ]),
     SharedModule,
     AuthorizationModule,
@@ -52,6 +56,7 @@ import { RequirementController } from './controllers/requirement.controller';
     StationService,
     AttendantService,
     KycService,
+    KycStatusService,
   ],
   controllers: [
     OrganizationController,
@@ -61,6 +66,7 @@ import { RequirementController } from './controllers/requirement.controller';
     AccountController,
     StationController,
     AttendantController,
+    KycController,
   ],
   exports: [AccountService, OrganizationService, StationService],
 })

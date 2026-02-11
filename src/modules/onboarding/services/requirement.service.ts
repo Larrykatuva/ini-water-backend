@@ -35,14 +35,6 @@ export class RequirementService extends EntityService<Requirement> {
     account: Account,
     payload: RequirementReqDto,
   ): Promise<MessageResDto> {
-    if (
-      await this.filter({
-        organization: { id: payload.organizationId },
-        name: payload.name,
-      })
-    )
-      throw new BadRequestException('Requirement already configured');
-
     const organization = await this.organizationService.filter(
       deepMerge(
         {
@@ -53,9 +45,17 @@ export class RequirementService extends EntityService<Requirement> {
     );
     if (!organization) throw new BadRequestException('Organization not found');
 
+    if (
+      await this.filter({
+        organization: { id: organization.id },
+        name: payload.name,
+      })
+    )
+      throw new BadRequestException('Requirement already configured');
+
     await this.save({
       organization: organization,
-      type: RequirementType.ORGANIZATION,
+      type: RequirementType.INDIVIDUAL,
       name: payload.name,
       input: payload.input,
       required: payload.required,

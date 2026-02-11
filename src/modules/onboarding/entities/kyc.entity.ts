@@ -2,7 +2,7 @@ import { CommonEntity } from '../../shared/entites/common.entity';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Account } from './account.entity';
 import { Requirement } from './requirement.entity';
-import { Organization } from './organization.entity';
+import { Organization, OrganizationStatus } from './organization.entity';
 
 @Entity()
 @Index(['organization', 'account'])
@@ -33,4 +33,10 @@ export class Kyc extends CommonEntity {
 
   @Column({ type: Boolean, default: false })
   verified: boolean;
+
+  @Column({ enum: OrganizationStatus, default: OrganizationStatus.PENDING })
+  status: OrganizationStatus;
+
+  @Column({ type: 'text', nullable: true })
+  comment: string;
 }

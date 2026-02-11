@@ -205,6 +205,8 @@ export class AuthService {
       throw new BadRequestException('Phone number is not verified');
     if (payload.username === user.email && !user.emailVerified)
       throw new BadRequestException('Email is not verified');
+    if (!user.password)
+      throw new BadRequestException('Please reset your password to continue');
     if (signInMethod === SignInMethod.SignUp)
       if (!this.decryptPassword(user, payload.password))
         throw new BadRequestException('Invalid login details');
@@ -239,8 +241,6 @@ export class AuthService {
     if (accounts.length > 0) {
       account = accounts[0];
     }
-
-    console.log(account);
 
     return this.generateUserToken(user, account);
   }
@@ -355,6 +355,9 @@ export class AuthService {
       { relations: { user: true, organization: true } },
     );
 
-    return this.generateUserToken(user, account);
+    const data = this.generateUserToken(user, account);
+    data.refreshToken = token;
+
+    return data;
   }
 }
