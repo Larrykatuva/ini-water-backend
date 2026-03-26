@@ -66,6 +66,9 @@ export class InviteService extends EntityService<Invite> {
     this.eventEmitter.emit('organization.invite.created', {
       context: {
         invite: invite,
+        organization: invite.organization,
+        name: payload.name,
+        inviteLink: '',
       },
       subject: 'Account Invitation',
       email: payload.email,

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You’ve Been Added as a Staff Member</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 16px;
+            line-height: 30px;
+            color: #333;
+        }
+
+        .email-container {
+            max-width: 480px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 30px 25px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .logo img {
+            height: 60px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-top: 0;
+        }
+
+        .content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .highlight {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        .invite-box {
+            text-align: center;
+            background: linear-gradient(171.9deg, #FFFFFF 29.33%, #E5F7FF 80.2%);
+            border-radius: 10px;
+            padding: 25px 20px;
+            margin: 25px 0;
+        }
+
+        .invite-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 28px;
+            background: linear-gradient(90deg, #0369A0 0%, #29BCB7 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 500px) {
+            .email-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwJromFWFHBKmfdiQjQLo5iqIv8RLPJJKutA&s">
+    </div>
+
+    <h1 class="gradient-text">You’ve Been Added as a Staff Member</h1>
+
+    <div class="content">
+        <p>Hello <span class="highlight"><%= staff.fullName %></span>,</p>
+
+        <p>You have been added as a <span class="highlight"><%= staff.title %></span> to the account <span class="highlight"><%= companyName %></span>.</p>
+
+        <p>You can now access the system and begin managing your assigned responsibilities.</p>
+    </div>
+
+    <div class="invite-box">
+        <p><strong>Activate Your Staff Access</strong></p>
+        <a href="<%= inviteLink %>" class="invite-btn">Access Account</a>
+        <p style="margin-top:15px; font-size:13px; color:#666;">
+            For security reasons, this link may expire after some time.
+        </p>
+    </div>
+
+    <div class="content">
+        <p><span class="highlight">Was this unexpected?</span>
+            If you believe you were added in error, please contact the account administrator immediately or ignore this email.</p>
+    </div>
+
+    <div class="footer">
+        <p>If you have any questions, feel free to reach out to your account administrator or reply to this email.</p>
+        <p>Best regards,<br>
+            <strong>Inibyte Limited Team</strong></p>
+    </div>
+</div>
+</body>
+</html>

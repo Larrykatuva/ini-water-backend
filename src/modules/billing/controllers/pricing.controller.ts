@@ -36,6 +36,8 @@ import { QueryDecorator } from '../../shared/decorators/query.decorator';
 import { OrderingDecorator } from '../../shared/decorators/ordering.decorator';
 import { deepMerge } from '../../shared/services/utility.service';
 import { Pricing } from '../entities/pricing.entity';
+import { SearchFields } from '../../shared/pipes/search-fields.pipe';
+import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
 
 @ApiTags('Billing')
 @Controller('billing')
@@ -56,6 +58,15 @@ export class PricingController {
 
   @Get('pricings')
   @PaginatedResponsePipe(PricingResDto, HttpStatus.OK)
+  @SearchFields(
+    Pricing.name,
+    'id',
+    'organization__id',
+    'station__id',
+    'active',
+    'account__id',
+  )
+  @OrderingFields(Pricing.name, 'id', 'createdAt')
   async getPricings(
     @RequestUser() user: User,
     @RequestUserAccount() account: Account,

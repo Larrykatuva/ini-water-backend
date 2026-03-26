@@ -100,6 +100,8 @@ export class StaffService extends EntityService<Staff> {
     this.eventEmitter.emit('organization.staff.add', {
       context: {
         staff: staff,
+        organization: organization,
+        inviteLink: '',
       },
       subject: 'Staff Invite',
       email: user.email,
@@ -127,12 +129,17 @@ export class StaffService extends EntityService<Staff> {
 
     await this.update({ id: id }, payload);
 
-    const updatedStaff = await this.filter({ id: id });
+    const updatedStaff = await this.filter(
+      { id: id },
+      { relations: { organization: true } },
+    );
 
     if ('active' in payload) {
       this.eventEmitter.emit('organization.staff.add', {
         context: {
           staff: updatedStaff,
+          organization: updatedStaff?.organization,
+          inviteLink: '',
         },
         subject: `Staff Account ${updatedStaff?.active ? 'Activated' : 'Deactivated'}`,
         email: user.email,

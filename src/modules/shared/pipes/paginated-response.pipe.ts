@@ -12,7 +12,7 @@ import {
   ApiQuery,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { PaginatedResponseDto } from '../dtos/shared.dto';
+import { BadRequestDto, PaginatedResponseDto } from '../dtos/shared.dto';
 import { PaginationInterceptor } from '../interceptors/pagination.interceptor';
 
 /**
@@ -83,7 +83,7 @@ export const PaginatedResponsePipe = <T extends Type<any>>(
     // This is useful for cases where invalid pagination parameters are passed.
     ApiBadRequestResponse({
       description: 'Bad request',
-      type: undefined,
+      type: BadRequestDto,
     }),
     UseInterceptors(PaginationInterceptor),
   );

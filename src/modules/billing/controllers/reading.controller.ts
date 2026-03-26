@@ -22,6 +22,8 @@ import { OrderingDecorator } from '../../shared/decorators/ordering.decorator';
 import { Reading } from '../entities/reading.entities';
 import { deepMerge } from '../../shared/services/utility.service';
 import { ResponsePipe } from '../../shared/pipes/response.pipe';
+import { SearchFields } from '../../shared/pipes/search-fields.pipe';
+import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
 
 @ApiTags('Billing')
 @Controller('billing')
@@ -30,6 +32,16 @@ export class ReadingController {
 
   @Get('readings')
   @PaginatedResponsePipe(ReadingResDto, HttpStatus.OK)
+  @SearchFields(
+    Reading.name,
+    'id',
+    'organization__id',
+    'date',
+    'pricing__id',
+    'pricing__station__id',
+    'actionBy__id',
+  )
+  @OrderingFields(Reading.name, 'id', 'createdAt')
   async getReadings(
     @RequestUser() user: User,
     @RequestUserAccount() account: Account,

@@ -12,6 +12,10 @@ export class InviteReqDto {
   @ApiProperty({ type: String })
   @IsNotEmpty({ message: 'Email is required' })
   email: string;
+
+  @ApiProperty({ type: String })
+  @IsNotEmpty({ message: 'Name is required' })
+  name: string;
 }
 
 export class InviteResDto extends CommonDto {

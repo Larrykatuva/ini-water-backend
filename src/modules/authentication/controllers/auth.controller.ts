@@ -13,7 +13,7 @@ import { AuthService } from '../services/auth.service';
 import { ResponsePipe } from '../../shared/pipes/response.pipe';
 import { MessageResDto } from '../../shared/dtos/shared.dto';
 import {
-  AuthCodeReqDto,
+  AuthCodeReqDto, DeviceAuthReqDto,
   GoogleAuthResDto,
   LoginReqDto,
   LoginResDto, RefreshTokenReqDto,
@@ -95,10 +95,10 @@ export class AuthController {
     return await this.authService.uploadProfile(user, file);
   }
 
-  @Get('google/auth-url')
+  @Post('google/auth-url')
   @ResponsePipe(GoogleAuthResDto, HttpStatus.OK)
-  getGoogleAuthUrl(): GoogleAuthResDto {
-    return { url: this.googleService.getAuthUrl() };
+  getGoogleAuthUrl(@Body() payload: DeviceAuthReqDto): GoogleAuthResDto {
+    return { url: this.googleService.getAuthUrl(payload.device) };
   }
 
   @Post('google/code')

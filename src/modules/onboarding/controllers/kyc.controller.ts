@@ -93,7 +93,7 @@ export class KycController {
     );
   }
 
-  @Patch('kyc/:kycId')
+  @Patch('kyc/:kycId/approve')
   @ResponsePipe(MessageResDto, HttpStatus.OK)
   @AllowedPermissions(SetPermission.ApproveKyc)
   async updateKyc(

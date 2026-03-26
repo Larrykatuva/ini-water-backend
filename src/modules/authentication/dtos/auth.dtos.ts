@@ -95,13 +95,15 @@ export enum AuthDevice {
   iOS = 'iOS',
 }
 
-export class AuthCodeReqDto {
+export class DeviceAuthReqDto {
+  @ApiProperty({ type: String, default: AuthDevice.Web })
+  device: AuthDevice.Web;
+}
+
+export class AuthCodeReqDto extends DeviceAuthReqDto {
   @ApiProperty({ type: String, required: true })
   @IsNotEmpty({ message: 'Code is required' })
   code: string;
-
-  @ApiProperty({ type: String, default: AuthDevice.Web })
-  device: AuthDevice.Web;
 }
 
 export class RefreshTokenReqDto {

@@ -4,7 +4,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import * as ejs from 'ejs';
 
-const INVITE_SUBJECT = 'Account Invitation';
 const APPROVAL_SUBJECT = 'Account Approval';
 
 interface SendEmail {
@@ -75,20 +74,6 @@ export class EmailService {
     this.logger.log('Email sent successfully!');
   }
 
-  @OnEvent('notify.email.invite')
-  async sendInviteEmail(payload: {
-    email: string;
-    context: object;
-    template: string;
-  }): Promise<void> {
-    await this.sendEjsEmail({
-      email: payload.email,
-      subject: INVITE_SUBJECT,
-      context: payload.context,
-      template: 'invite.ejs',
-    });
-  }
-
   @OnEvent('notify.account.verify')
   async sendVerifyAccountEmail(payload: SendEmail): Promise<void> {
     await this.sendEjsEmail({
@@ -125,7 +110,27 @@ export class EmailService {
       email: payload.email,
       subject: payload.subject,
       context: payload.context,
-      template: 'topup.ejs',
+      template: 'payment/topup.ejs',
+    });
+  }
+
+  @OnEvent('organization.staff.add')
+  async sendAccountStaffEmail(payload: SendEmail): Promise<void> {
+    await this.sendEjsEmail({
+      email: payload.email,
+      subject: payload.subject,
+      context: payload.context,
+      template: 'organization/staff/add.ejs',
+    });
+  }
+
+  @OnEvent('organization.staff.created')
+  async sendInviteEmail(payload: SendEmail): Promise<void> {
+    await this.sendEjsEmail({
+      email: payload.email,
+      subject: payload.subject,
+      context: payload.context,
+      template: 'organization/invite/created.ejs',
     });
   }
 }

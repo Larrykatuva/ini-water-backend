@@ -21,6 +21,8 @@ import { QueryDecorator } from '../../shared/decorators/query.decorator';
 import { OrderingDecorator } from '../../shared/decorators/ordering.decorator';
 import { Settlement } from '../entities/settlement.entity';
 import { deepMerge } from '../../shared/services/utility.service';
+import { SearchFields } from '../../shared/pipes/search-fields.pipe';
+import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
 
 @ApiTags('Billing')
 @Controller('billing')
@@ -44,6 +46,19 @@ export class SettlementController {
 
   @Get('settlements')
   @PaginatedResponsePipe(SettlementResDto, HttpStatus.OK)
+  @SearchFields(
+    Settlement.name,
+    'id',
+    'organization__id',
+    'target',
+    'station__id',
+    'purpose',
+    'provider__id',
+    'accountNumber',
+    'reference',
+    'active',
+  )
+  @OrderingFields(Settlement.name, 'id', 'createdAt')
   async getSettlements(
     @RequestUser() user: User,
     @RequestUserAccount() account: Account,
