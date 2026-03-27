@@ -1,0 +1,30 @@
+name: Deploy Django App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Ubuntu VM via SSH (with password)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /var/www/inibyte/ini-water-backend
+            git pull origin main
+            npm install
+            npm run build
+            pm2 list
+            pm2 restart water
+            pm2 logs

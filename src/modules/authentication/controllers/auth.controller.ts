@@ -28,6 +28,7 @@ import { Account } from '../../onboarding/entities/account.entity';
 import { User } from '../entities/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GoogleService } from '../services/google.service';
+import { AccountResDto } from '../../onboarding/dtos/organization.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -68,7 +69,8 @@ export class AuthController {
   }
 
   @Get('accounts')
-  @ResponsePipe([Account], HttpStatus.OK)
+  @ResponsePipe(AccountResDto, HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async getUserAccounts(@RequestUser() user: User): Promise<Account[]> {
     return await this.authService.getUserAccounts(user);
   }
