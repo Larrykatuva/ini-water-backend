@@ -21,10 +21,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd /var/www/inibyte/ini-water-backend
-            git pull origin main
-            npm install
-            npm run build
-            pm2 list
-            pm2 restart water
-            pm2 logs
+            sudo bash -c '
+              cd /var/www/inibyte/ini-water-backend &&
+              git pull origin main &&
+              npm install &&
+              npm run build &&
+              pm2 list &&
+              pm2 restart water &&
+              pm2 logs --lines 50
+            '
