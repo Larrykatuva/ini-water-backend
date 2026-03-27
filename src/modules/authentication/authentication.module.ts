@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthGuard } from './guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { OnboardingModule } from '../onboarding/onboarding.module';
+import { GoogleService } from './services/google.service';
 
 @Module({
   imports: [
@@ -17,7 +18,14 @@ import { OnboardingModule } from '../onboarding/onboarding.module';
     SharedModule,
     forwardRef(() => OnboardingModule),
   ],
-  providers: [UserService, AuthService, CodeService, AuthGuard, JwtService],
+  providers: [
+    UserService,
+    AuthService,
+    CodeService,
+    AuthGuard,
+    JwtService,
+    GoogleService,
+  ],
   controllers: [AuthController],
   exports: [AuthGuard, AuthService, UserService],
 })

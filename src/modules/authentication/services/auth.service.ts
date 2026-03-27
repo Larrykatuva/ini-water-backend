@@ -5,14 +5,15 @@ import {
   LoginResDto,
   RegisterReqDto,
   RequestCodeReqDto,
+  TokenType,
   VerifyOtpReqDto,
 } from '../dtos/auth.dtos';
 import {
-  BadRequestException, forwardRef, Inject,
+  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { User } from '../entities/user.entity';
+import { SignInMethod, User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Purpose } from '../entities/code.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -21,6 +22,9 @@ import { MessageResDto } from '../../shared/dtos/shared.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AccountService } from '../../onboarding/services/account.service';
 import { Account } from '../../onboarding/entities/account.entity';
+import { StorageService } from '../../shared/services/storage.service';
+import { GoogleService } from './google.service';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +35,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly eventEmitter: EventEmitter2,
     private readonly accountService: AccountService,
+    private readonly storageService: StorageService,
+    private readonly googleService: GoogleService,
   ) {}
 
   decryptPassword(user: User, password: string): boolean {
@@ -151,35 +157,59 @@ export class AuthService {
     }
     await this.userService.update({ id: user.id }, userUpdate);
     if (payload.purpose === Purpose.AccountLogin) {
-      return this.generateUserToken(user);
+      return this.generateUserToken(
+        user,
+        await this.accountService.filter(
+          { user: { id: user.id } },
+          { relations: { user: true, organization: true } },
+        ),
+      );
     }
     return { message: 'Code verified successfully' };
   }
 
-  generateUserToken(user: User, account?: Account): LoginResDto {
+  generateUserToken(user: User, account: Account | null): LoginResDto {
     return {
       accessToken: this.jwtService.sign(
-        { ...user },
+        {
+          id: user.id,
+          user: user,
+          account: account,
+          type: TokenType.AccessToken,
+        },
         {
           expiresIn: this.configService.get<string>('TOKEN_EXPIRY'),
           secret: this.configService.get<string>('PRIVATE_KEY'),
         },
       ),
+      refreshToken: this.jwtService.sign(
+        { id: user.id, accountId: account?.id, type: TokenType.RefreshToken },
+        {
+          expiresIn: this.configService.get<string>('REFRESH_EXPIRY'),
+          secret: this.configService.get<string>('PRIVATE_KEY'),
+        },
+      ),
       user: user,
       expiresIn: this.configService.get<string>('TOKEN_EXPIRY') as string,
-      account: account,
+      account: account ? account : undefined,
     };
   }
 
-  async login(payload: LoginReqDto): Promise<LoginResDto | MessageResDto> {
+  async login(
+    payload: LoginReqDto,
+    signInMethod = SignInMethod.SignUp,
+  ): Promise<LoginResDto | MessageResDto> {
     const user = await this.userService.getUserByUsername(payload.username);
     if (!user) throw new BadRequestException('Invalid username or password');
     if (payload.username === user.phoneNumber && !user.phoneVerified)
       throw new BadRequestException('Phone number is not verified');
     if (payload.username === user.email && !user.emailVerified)
       throw new BadRequestException('Email is not verified');
-    if (!this.decryptPassword(user, payload.password))
-      throw new BadRequestException('Invalid login details');
+    if (!user.password)
+      throw new BadRequestException('Please reset your password to continue');
+    if (signInMethod === SignInMethod.SignUp)
+      if (!this.decryptPassword(user, payload.password))
+        throw new BadRequestException('Invalid login details');
     user.password = '';
 
     if (user.twoFactorEnabled) {
@@ -229,7 +259,10 @@ export class AuthService {
     token: string,
     accountId: number,
   ): Promise<LoginResDto | MessageResDto> {
-    const user = this.decodeToken(token);
+    const tokenUser = this.decodeToken(token);
+
+    const user = await this.userService.filter({ id: tokenUser.id });
+    if (!user) throw new BadRequestException('failed to switch user accounts');
 
     const account = await this.accountService.filter(
       {
@@ -250,8 +283,81 @@ export class AuthService {
         secret: process.env.PRIVATE_KEY,
       });
     } catch (err) {
-      console.log(err);
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        err['message'] ? err['message'] : 'Invalid or expired token',
+      );
     }
+  }
+
+  async uploadProfile(
+    user: User,
+    file: Express.Multer.File,
+  ): Promise<MessageResDto> {
+    if (!file) throw new BadRequestException('Profile is required');
+
+    user.profile = this.storageService.getFileName(file.originalname);
+    await this.storageService.uploadFile(file, user.profile);
+
+    await this.userService.update({ id: user.id }, { profile: user.profile });
+
+    return { message: 'Profile uploaded successfully' };
+  }
+
+  async googleAuth(code: string): Promise<MessageResDto | LoginResDto> {
+    const googleInfo = await this.googleService.getUserInfo(code);
+
+    let user = await this.userService.filter({ email: googleInfo.email });
+
+    if (!user) {
+      user = await this.userService.save({
+        email: googleInfo.email,
+        emailVerified: googleInfo.email_verified,
+        verified: googleInfo.email_verified,
+        fullName: googleInfo.name,
+        profile: googleInfo.picture,
+        signInMethod: SignInMethod.Google,
+      });
+    } else {
+      await this.userService.update(
+        { id: user.id, profile: IsNull() },
+        { profile: googleInfo.picture },
+      );
+
+      if (!user.emailVerified || !user.verified) {
+        await this.userService.update(
+          { id: user.id },
+          {
+            emailVerified: googleInfo.email_verified,
+            verified: googleInfo.email_verified,
+            signInMethod: SignInMethod.Google,
+          },
+        );
+      }
+    }
+
+    return await this.login(
+      { username: user.email, password: user.password },
+      SignInMethod.Google,
+    );
+  }
+
+  async refreshToken(token: string): Promise<MessageResDto | LoginResDto> {
+    const tokenUser = this.decodeToken(token);
+
+    const user = await this.userService.filter({ id: tokenUser.id });
+    if (!user) throw new BadRequestException('Invalid or expired token');
+
+    const account = await this.accountService.filter(
+      {
+        id: tokenUser['accountId'] as number,
+      },
+      { relations: { user: true, organization: true } },
+    );
+
+    const data = this.generateUserToken(user, account);
+    data.refreshToken = token;
+
+    return data;
   }
 }

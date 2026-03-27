@@ -19,6 +19,12 @@ import { Organization } from '../modules/onboarding/entities/organization.entity
 import { Requirement } from '../modules/onboarding/entities/requirement.entity';
 import { Staff } from '../modules/onboarding/entities/staff.entity';
 import { Station } from '../modules/onboarding/entities/station.entity';
+import { Country } from '../modules/settings/entities/country.entity';
+import { Provider } from '../modules/settings/entities/provider.entity';
+import { Pricing } from '../modules/billing/entities/pricing.entity';
+import { Reading } from '../modules/billing/entities/reading.entities';
+import { Settlement } from '../modules/billing/entities/settlement.entity';
+import { KycStatus } from '../modules/onboarding/entities/kycStatus.entity';
 
 /**
  * DatabaseConfig class for configuring a read-only PostgreSQL database connection.
@@ -41,8 +47,6 @@ class DatabaseConfig implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('DB_USER'),
       password: this.configService.get<string>('DB_PASSWORD'),
       database: this.configService.get<string>('DB_NAME'),
-      // type: 'sqlite',
-      // database: 'database.sqlite',
       entities: [
         Code,
         User,
@@ -58,6 +62,12 @@ class DatabaseConfig implements TypeOrmOptionsFactory {
         Requirement,
         Staff,
         Station,
+        Country,
+        Provider,
+        Pricing,
+        Reading,
+        Settlement,
+        KycStatus,
       ],
       synchronize: true,
     };

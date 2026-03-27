@@ -46,9 +46,17 @@ export class LoginReqDto {
   password: string;
 }
 
+export enum TokenType {
+  AccessToken = 'AccessToken',
+  RefreshToken = 'RefreshToken',
+}
+
 export class LoginResDto {
   @ApiProperty({ type: String })
   accessToken: string;
+
+  @ApiProperty({ type: String })
+  refreshToken: string;
 
   @ApiProperty({ type: UserResDto })
   user: User;
@@ -74,4 +82,32 @@ export class SwitchAccountDto {
   @ApiProperty({ type: String, required: true })
   @IsNotEmpty({ message: 'Account is required' })
   accountId: number;
+}
+
+export class GoogleAuthResDto {
+  @ApiProperty({ type: String, required: true })
+  url: string;
+}
+
+export enum AuthDevice {
+  Web = 'Web',
+  Android = 'Android',
+  iOS = 'iOS',
+}
+
+export class DeviceAuthReqDto {
+  @ApiProperty({ type: String, default: AuthDevice.Web })
+  device: AuthDevice.Web;
+}
+
+export class AuthCodeReqDto extends DeviceAuthReqDto {
+  @ApiProperty({ type: String, required: true })
+  @IsNotEmpty({ message: 'Code is required' })
+  code: string;
+}
+
+export class RefreshTokenReqDto {
+  @ApiProperty({ type: String, required: true })
+  @IsNotEmpty({ message: 'refreshToken is required' })
+  refreshToken: string;
 }

@@ -2,6 +2,8 @@ import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
 import { SetPermission } from '../entities/permission.entity';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { AuthGuard } from '../../authentication/guards/auth.guard';
+import { ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { BadRequestDto } from '../../shared/dtos/shared.dto';
 
 /**
  * PERMISSIONS_KEY is a constant string that acts as the key for storing
@@ -38,5 +40,15 @@ export const AllowedPermissions = (...permissions: SetPermission[]) => {
     UseGuards(AuthGuard),
     Permissions(...permissions),
     UseGuards(PermissionsGuard),
+    ApiOperation({
+      description: `
+## 🔒 Permissions Required
+> \`${permissions.join(', ')}\`
+      `,
+    }),
+    ApiUnauthorizedResponse({
+      description: '🔒 Unauthorized exception',
+      type: BadRequestDto,
+    }),
   );
 };

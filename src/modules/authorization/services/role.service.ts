@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { EntityService } from '../../shared/services/entity.service';
-import { Role } from '../entities/role.entity';
+import { Role, SystemRoles } from '../entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { RoleReqDto, RoleUpdateDto } from '../dtos/roles.dto';
@@ -20,6 +25,7 @@ import { AuthType } from '../entities/permission.entity';
 export class RoleService extends EntityService<Role> {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @Inject(forwardRef(() => AccountRoleService))
     private readonly accountRoleService: AccountRoleService,
     private readonly accountService: AccountService,
   ) {
@@ -128,5 +134,16 @@ export class RoleService extends EntityService<Role> {
     await this.accountRoleService.update({ id: accountRole.id }, accountRole);
 
     return { message: 'Assigned role updated successfully' };
+  }
+
+  async assignDefaultRole(account: Account): Promise<void> {
+    const role = await this.filter({ name: SystemRoles.AccountAdmin });
+
+    if (role) {
+      await this.accountRoleService.save({
+        account: account,
+        role: role,
+      });
+    }
   }
 }

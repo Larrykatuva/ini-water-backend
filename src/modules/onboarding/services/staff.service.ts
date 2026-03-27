@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { EntityService } from '../../shared/services/entity.service';
 import { Staff } from '../entities/staff.entity';
 import { Repository } from 'typeorm/repository/Repository';
@@ -22,6 +27,7 @@ export class StaffService extends EntityService<Staff> {
     private readonly staffRepository: Repository<Staff>,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
+    @Inject(forwardRef(() => OrganizationService))
     private readonly organizationService: OrganizationService,
     private readonly accountService: AccountService,
     private readonly eventEmitter: EventEmitter2,
@@ -46,8 +52,8 @@ export class StaffService extends EntityService<Staff> {
 
     const organization = await this.organizationService.filter(
       deepMerge(
-        this.organizationService.organizationFilter(requestUser, account),
         { id: payload.organizationId },
+        this.organizationService.organizationFilter(requestUser, account),
       ),
     );
     if (!organization) throw new BadRequestException('Organization not found');
@@ -94,6 +100,8 @@ export class StaffService extends EntityService<Staff> {
     this.eventEmitter.emit('organization.staff.add', {
       context: {
         staff: staff,
+        organization: organization,
+        inviteLink: '',
       },
       subject: 'Staff Invite',
       email: user.email,
@@ -110,7 +118,7 @@ export class StaffService extends EntityService<Staff> {
     file?: Express.Multer.File,
   ): Promise<MessageResDto> {
     const staff = await this.filter(
-      deepMerge(this.staffFilter(user, account), { id: id }),
+      deepMerge({ id: id }, this.staffFilter(user, account)),
     );
     if (!staff) throw new BadRequestException('Staff not found');
 
@@ -121,12 +129,17 @@ export class StaffService extends EntityService<Staff> {
 
     await this.update({ id: id }, payload);
 
-    const updatedStaff = await this.filter({ id: id });
+    const updatedStaff = await this.filter(
+      { id: id },
+      { relations: { organization: true } },
+    );
 
     if ('active' in payload) {
       this.eventEmitter.emit('organization.staff.add', {
         context: {
           staff: updatedStaff,
+          organization: updatedStaff?.organization,
+          inviteLink: '',
         },
         subject: `Staff Account ${updatedStaff?.active ? 'Activated' : 'Deactivated'}`,
         email: user.email,

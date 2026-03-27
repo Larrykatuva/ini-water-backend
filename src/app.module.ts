@@ -11,6 +11,8 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { ScripayModule } from './modules/scripay/scripay.module';
+import { SettingsModule } from './modules/settings/settings.module';
+import { BillingModule } from './modules/billing/billing.module';
 
 @Module({
   imports: [
@@ -20,14 +22,14 @@ import { ScripayModule } from './modules/scripay/scripay.module';
     RedisConfig,
     MailConfig,
     ScheduleModule.forRoot(),
+    SettingsModule,
     SharedModule,
+    AuthenticationModule,
+    OnboardingModule,
+    AuthorizationModule,
     NotificationsModule,
     ScripayModule,
-    AuthenticationModule,
-    AuthorizationModule,
-    OnboardingModule,
+    BillingModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

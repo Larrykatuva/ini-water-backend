@@ -29,14 +29,21 @@ export enum SetPermission {
   ConfigureSystemSettings = 'Configure system settings',
 
   /**
-   * Billing permissions
+   * Onboarding permissions
    */
-  ConfigurePackages = 'Configure packages',
+  ManageOrganization = 'Manage organizations',
+  ManageStations = 'Manage stations',
+  ManageAttendants = 'Manage attendants',
+  ManageRequirements = 'Manage requirements',
+  UploadKyc = 'Upload Kyc',
+  ApproveKyc = 'Approve Kyc',
 
   /**
-   * Sending permissions
+   * Billing permissions
    */
-  ManageShortCodes = 'Manage short codes',
+  SetPricing = 'Set pricing',
+  SetReading = 'Set meter reading',
+  ConfigureSettlement = 'Configure settlement accounts',
 }
 
 export enum AuthType {
@@ -71,11 +78,18 @@ export const PermissionSets: {
     type: AuthType.Internal,
   },
 
-  // Billing permissions
-  { permission: SetPermission.ConfigurePackages, type: AuthType.Internal },
+  // Onboarding permissions
+  { permission: SetPermission.ManageOrganization, type: AuthType.Internal },
+  { permission: SetPermission.ManageStations, type: AuthType.External },
+  { permission: SetPermission.ManageAttendants, type: AuthType.External },
+  { permission: SetPermission.ManageRequirements, type: AuthType.External },
+  { permission: SetPermission.UploadKyc, type: AuthType.External },
+  { permission: SetPermission.ApproveKyc, type: AuthType.Internal },
 
-  // Sending permissions
-  { permission: SetPermission.ManageShortCodes, type: AuthType.External },
+  // Billing permissions
+  { permission: SetPermission.SetPricing, type: AuthType.External },
+  { permission: SetPermission.SetReading, type: AuthType.External },
+  { permission: SetPermission.ConfigureSettlement, type: AuthType.Internal },
 ];
 
 @Entity()

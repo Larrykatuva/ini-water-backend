@@ -4,6 +4,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { BadRequestDto } from '../dtos/shared.dto';
 
 /**
  * ResponsePipe function for applying standardized response decorators to
@@ -32,7 +33,7 @@ export const ResponsePipe = <T>(dto: any, status: HttpStatus) => {
         }),
     ApiBadRequestResponse({
       description: 'Bad request',
-      type: undefined,
+      type: BadRequestDto,
     }),
   );
 };

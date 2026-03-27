@@ -16,6 +16,19 @@ import { InviteService } from './services/invite.service';
 import { OrganizationService } from './services/organization.service';
 import { RequirementService } from './services/requirement.service';
 import { StaffService } from './services/staff.service';
+import { StationService } from './services/station.service';
+import { AttendantService } from './services/attendant.service';
+import { KycService } from './services/kyc.service';
+import { AccountController } from './controllers/account.controller';
+import { OrganizationController } from './controllers/organization.controller';
+import { StaffController } from './controllers/staff.controller';
+import { InviteController } from './controllers/invite.controller';
+import { StationController } from './controllers/station.controller';
+import { AttendantController } from './controllers/attendant.controller';
+import { RequirementController } from './controllers/requirement.controller';
+import { KycController } from './controllers/kyc.controller';
+import { KycStatus } from './entities/kycStatus.entity';
+import { KycStatusService } from './services/kycStatus.service';
 
 @Module({
   imports: [
@@ -28,18 +41,33 @@ import { StaffService } from './services/staff.service';
       Requirement,
       Staff,
       Station,
+      KycStatus,
     ]),
     SharedModule,
     AuthorizationModule,
     forwardRef(() => AuthenticationModule),
   ],
   providers: [
+    OrganizationService,
     AccountService,
     InviteService,
-    OrganizationService,
     RequirementService,
     StaffService,
+    StationService,
+    AttendantService,
+    KycService,
+    KycStatusService,
   ],
-  exports: [AccountService],
+  controllers: [
+    OrganizationController,
+    InviteController,
+    StaffController,
+    RequirementController,
+    AccountController,
+    StationController,
+    AttendantController,
+    KycController,
+  ],
+  exports: [AccountService, OrganizationService, StationService],
 })
 export class OnboardingModule {}

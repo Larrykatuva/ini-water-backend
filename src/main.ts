@@ -28,7 +28,7 @@ async function bootstrap() {
     ignoreGlobalPrefix: true,
   });
   SwaggerModule.setup('swagger-ui', app, external, {
-    jsonDocumentUrl: 'swagger/json',
+    jsonDocumentUrl: 'swagger-json',
   });
 
   await app.listen(process.env.PORT ?? 3000);

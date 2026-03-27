@@ -1,18 +1,22 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
   Get,
   HttpStatus,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ResponsePipe } from '../../shared/pipes/response.pipe';
 import { MessageResDto } from '../../shared/dtos/shared.dto';
 import {
+  AuthCodeReqDto, DeviceAuthReqDto,
+  GoogleAuthResDto,
   LoginReqDto,
-  LoginResDto,
+  LoginResDto, RefreshTokenReqDto,
   RegisterReqDto,
   RequestCodeReqDto,
   SwitchAccountDto,
@@ -22,11 +26,17 @@ import { RequestToken, RequestUser } from '../decorators/auth.decorator';
 import { AuthGuard } from '../guards/auth.guard';
 import { Account } from '../../onboarding/entities/account.entity';
 import { User } from '../entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { GoogleService } from '../services/google.service';
+import { AccountResDto } from '../../onboarding/dtos/organization.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly googleService: GoogleService,
+  ) {}
 
   @Post('register')
   @ResponsePipe(MessageResDto, HttpStatus.CREATED)
@@ -59,7 +69,8 @@ export class AuthController {
   }
 
   @Get('accounts')
-  @ResponsePipe([Account], HttpStatus.OK)
+  @ResponsePipe(AccountResDto, HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async getUserAccounts(@RequestUser() user: User): Promise<Account[]> {
     return await this.authService.getUserAccounts(user);
   }
@@ -72,5 +83,35 @@ export class AuthController {
     @Body() payload: SwitchAccountDto,
   ): Promise<MessageResDto | LoginResDto> {
     return await this.authService.switchAccount(token, payload.accountId);
+  }
+
+  @Post('profile')
+  @ResponsePipe(MessageResDto, HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('profile'))
+  @ApiConsumes('multipart/form-data')
+  async uploadProfile(
+    @RequestUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<MessageResDto> {
+    return await this.authService.uploadProfile(user, file);
+  }
+
+  @Post('google/auth-url')
+  @ResponsePipe(GoogleAuthResDto, HttpStatus.OK)
+  getGoogleAuthUrl(@Body() payload: DeviceAuthReqDto): GoogleAuthResDto {
+    return { url: this.googleService.getAuthUrl(payload.device) };
+  }
+
+  @Post('google/code')
+  @ResponsePipe(LoginResDto, HttpStatus.OK)
+  async processGoogleCode(@Body() payload: AuthCodeReqDto) {
+    return await this.authService.googleAuth(payload.code);
+  }
+
+  @Post('refresh-token')
+  @ResponsePipe(LoginResDto, HttpStatus.OK)
+  async refreshToken(@Body() payload: RefreshTokenReqDto) {
+    return await this.authService.refreshToken(payload.refreshToken);
   }
 }

@@ -30,6 +30,9 @@ export class MessageResDto {
 
   @ApiProperty({ type: String })
   message: string;
+
+  @ApiProperty({ type: Number, required: false })
+  resourceId?: number;
 }
 
 export class ExceptionDto {
@@ -52,4 +55,15 @@ export class CommonDto {
 
   @ApiProperty()
   updatedAt: Date;
+}
+
+export class BadRequestDto {
+  @ApiProperty({ type: String })
+  message: string;
+
+  @ApiProperty({ type: String })
+  error: string;
+
+  @ApiProperty({ type: Number })
+  statusCode: number;
 }

@@ -35,24 +35,27 @@ export class RequirementService extends EntityService<Requirement> {
     account: Account,
     payload: RequirementReqDto,
   ): Promise<MessageResDto> {
+    const organization = await this.organizationService.filter(
+      deepMerge(
+        {
+          id: payload.organizationId,
+        },
+        this.organizationService.organizationFilter(user, account),
+      ),
+    );
+    if (!organization) throw new BadRequestException('Organization not found');
+
     if (
       await this.filter({
-        organization: { id: payload.organizationId },
+        organization: { id: organization.id },
         name: payload.name,
       })
     )
       throw new BadRequestException('Requirement already configured');
 
-    const organization = await this.organizationService.filter(
-      deepMerge(this.organizationService.organizationFilter(user, account), {
-        id: payload.organizationId,
-      }),
-    );
-    if (!organization) throw new BadRequestException('Organization not found');
-
     await this.save({
       organization: organization,
-      type: RequirementType.ORGANIZATION,
+      type: RequirementType.INDIVIDUAL,
       name: payload.name,
       input: payload.input,
       required: payload.required,
