@@ -114,3 +114,30 @@ export class StatusResDto {
   @ApiProperty({ type: String })
   provider_ref: string;
 }
+
+export class ProfileResDto {
+  @ApiProperty({ type: String })
+  id: number;
+}
+
+export class WalletReqDto {
+  @ApiProperty({ type: String })
+  profile_id: number;
+
+  @ApiProperty({ type: String })
+  name: string;
+
+  @ApiProperty({ type: String })
+  description: string;
+
+  @ApiProperty({ type: String })
+  currency: string;
+}
+
+export class WalletResDto extends WalletReqDto {
+  @ApiProperty({ type: String })
+  number: string;
+
+  @ApiProperty({ type: String })
+  id: number;
+}

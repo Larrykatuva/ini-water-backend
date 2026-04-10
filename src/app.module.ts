@@ -13,6 +13,7 @@ import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { ScripayModule } from './modules/scripay/scripay.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { BillingModule } from './modules/billing/billing.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BillingModule } from './modules/billing/billing.module';
     NotificationsModule,
     ScripayModule,
     BillingModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}

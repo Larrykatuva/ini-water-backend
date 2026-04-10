@@ -14,17 +14,28 @@ import { SettlementController } from './controllers/settlement.controller';
 import { OnboardingModule } from '../onboarding/onboarding.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { Wallet } from './entities/wallet.entity';
+import { WalletController } from './controllers/wallet.controller';
+import { WalletService } from './services/wallet.service';
+import { ScripayModule } from '../scripay/scripay.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Pricing, Reading, Settlement]),
+    TypeOrmModule.forFeature([Wallet, Pricing, Reading, Settlement]),
     SharedModule,
     SettingsModule,
     OnboardingModule,
     AuthenticationModule,
     AuthorizationModule,
+    ScripayModule,
   ],
-  providers: [PricingService, ReadingService, SettlementService],
-  controllers: [PricingController, ReadingController, SettlementController],
+  providers: [PricingService, ReadingService, SettlementService, WalletService],
+  controllers: [
+    PricingController,
+    ReadingController,
+    SettlementController,
+    WalletController,
+  ],
+  exports: [WalletService],
 })
 export class BillingModule {}

@@ -20,7 +20,10 @@ import {
 } from '../../shared/dtos/shared.dto';
 import { SearchFields } from '../../shared/pipes/search-fields.pipe';
 import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
-import { Organization } from '../entities/organization.entity';
+import {
+  Organization,
+  OrganizationAccess,
+} from '../entities/organization.entity';
 import { OrganizationService } from '../services/organization.service';
 import {
   RequestUser,
@@ -64,6 +67,22 @@ export class OrganizationController {
         query,
         this.organizationService.organizationFilter(user, account),
       ),
+      { order: ordering },
+    );
+  }
+
+  @Get('organizations/all')
+  @PaginatedResponsePipe(OrganizationResDto, HttpStatus.OK)
+  @SearchFields(Organization.name, 'id', 'name', 'code', 'access', 'restricted')
+  @OrderingFields(Organization.name, 'id', 'createdAt')
+  async getOrganizationsAll(
+    @PaginationDecorator() pagination: DefaultPagination,
+    @QueryDecorator() query: object,
+    @OrderingDecorator() ordering: object,
+  ): Promise<[Organization[], number]> {
+    return await this.organizationService.paginatedFilter(
+      pagination,
+      deepMerge(query, { access: OrganizationAccess.PUBLIC }),
       { order: ordering },
     );
   }

@@ -29,4 +29,7 @@ export class Reading extends CommonEntity {
     nullable: true,
   })
   actionBy: Account;
+
+  @Column({ type: Boolean, default: false })
+  closed: boolean;
 }
