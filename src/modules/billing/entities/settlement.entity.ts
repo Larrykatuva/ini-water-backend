@@ -13,6 +13,12 @@ export enum Purpose {
   Bill = 'Bill',
   Profits = 'Profits',
   General = 'General',
+  Charges = 'Charges',
+}
+
+export enum Strategy {
+  Auto = 'Auto',
+  Manual = 'Manual',
 }
 
 @Entity()
@@ -40,6 +46,9 @@ export class Settlement extends CommonEntity {
     onDelete: 'CASCADE',
   })
   provider: Provider;
+
+  @Column({ enum: Strategy, default: Strategy.Auto })
+  strategy: Strategy;
 
   @Column({ type: String })
   accountNumber: string;

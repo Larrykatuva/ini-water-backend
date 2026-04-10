@@ -14,34 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to Ubuntu VM via SSH
+      - name: Deploy to Ubuntu VM via SSH (with password)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            set -e
-
-            cd /var/www/inibyte/ini-water-backend
-
-            echo "📥 Pulling latest code..."
-            git pull origin main
-
-            echo "📦 Installing dependencies..."
-            npm ci
-
-            echo "🏗 Building app..."
-            npm run build
-
-            echo "🔄 Restarting PM2 process..."
-            pm2 restart water || pm2 start dist/main.js --name water
-
-            echo "💾 Saving PM2 process list..."
-            pm2 save
-
-            echo "📊 PM2 status:"
-            pm2 list
-
-            echo "📜 ბოლო logs:"
-            pm2 logs --lines 50
+            sudo bash -c '
+              cd /var/www/inibyte/ini-water-backend &&
+              git pull origin main &&
+              npm install &&
+              npm run build &&
+              pm2 list &&
+              pm2 restart water &&
+              pm2 logs
+            '

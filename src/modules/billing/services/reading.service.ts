@@ -21,4 +21,10 @@ export class ReadingService extends EntityService<Reading> {
     if (user.isStaff) return {};
     return { organization: { id: account.organization.id } };
   }
+
+  expectedAmount(reading: Reading): number {
+    return Number(
+      (reading.pricing.sellingPrice * reading.volumeSold).toFixed(2),
+    );
+  }
 }
