@@ -77,32 +77,37 @@ export class TransactionService extends EntityService<Transaction> {
     try {
       const expectedAmount = this.readingService.expectedAmount(reading);
 
-      await qr.manager.insert(Reconciliation, {
-        organization: reading.pricing.organization,
-        station: reading.pricing.station,
-        reading: reading,
-        expectedAmount: expectedAmount,
-        actualAmount: payload.amount,
-        deficitAmount:
-          expectedAmount - payload.amount > 0
-            ? expectedAmount - payload.amount
-            : 0,
-        date: new Date(),
-        account: account,
-      });
+      await qr.manager.save(
+        qr.manager.create(Reconciliation, {
+          organization: reading.pricing.organization,
+          station: reading.pricing.station,
+          reading: reading,
+          expectedAmount: expectedAmount,
+          maxDecimalAmount: this.readingService.maximumDeficitAmount(reading),
+          actualAmount: payload.amount,
+          deficitAmount:
+            expectedAmount - payload.amount > 0
+              ? expectedAmount - payload.amount
+              : 0,
+          date: new Date(),
+          account: account,
+        }),
+      );
 
       const orderId = uuidv4();
-      await qr.manager.insert(Transaction, {
-        organization: reading.pricing.organization,
-        accountNumber: payload.accountNumber,
-        orderId: orderId,
-        purpose: TransactionPurpose.Incoming,
-        provider: provider,
-        amount: payload.amount,
-        station: reading.pricing.station,
-        reading: reading,
-        actionBy: account,
-      });
+      await qr.manager.save(
+        qr.manager.create(Transaction, {
+          organization: reading.pricing.organization,
+          accountNumber: payload.accountNumber,
+          orderId: orderId,
+          purpose: TransactionPurpose.Incoming,
+          provider: provider,
+          amount: payload.amount,
+          station: reading.pricing.station,
+          reading: reading,
+          actionBy: account,
+        }),
+      );
 
       const result = await this.scripayService.initiateStk(
         payload.accountNumber,

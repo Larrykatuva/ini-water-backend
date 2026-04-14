@@ -6,6 +6,10 @@ import { BillingModule } from '../billing/billing.module';
 import { OnboardingModule } from '../onboarding/onboarding.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
+import { TransactionService } from './services/transaction.service';
+import { TransactionController } from './controllers/transaction.controller';
+import { SettingsModule } from '../settings/settings.module';
+import { ScripayModule } from '../scripay/scripay.module';
 
 @Module({
   imports: [
@@ -15,8 +19,10 @@ import { Transaction } from './entities/transaction.entity';
     AuthorizationModule,
     BillingModule,
     OnboardingModule,
+    SettingsModule,
+    ScripayModule,
   ],
-  providers: [],
-  controllers: [],
+  providers: [TransactionService],
+  controllers: [TransactionController],
 })
 export class PaymentModule {}

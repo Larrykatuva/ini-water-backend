@@ -18,10 +18,19 @@ import { Wallet } from './entities/wallet.entity';
 import { WalletController } from './controllers/wallet.controller';
 import { WalletService } from './services/wallet.service';
 import { ScripayModule } from '../scripay/scripay.module';
+import { Reconciliation } from '../payment/entities/reconciliation.entity';
+import { Transaction } from '../payment/entities/transaction.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Wallet, Pricing, Reading, Settlement]),
+    TypeOrmModule.forFeature([
+      Wallet,
+      Pricing,
+      Reading,
+      Settlement,
+      Reconciliation,
+      Transaction,
+    ]),
     SharedModule,
     SettingsModule,
     OnboardingModule,
@@ -36,6 +45,6 @@ import { ScripayModule } from '../scripay/scripay.module';
     SettlementController,
     WalletController,
   ],
-  exports: [WalletService],
+  exports: [WalletService, ReadingService],
 })
 export class BillingModule {}

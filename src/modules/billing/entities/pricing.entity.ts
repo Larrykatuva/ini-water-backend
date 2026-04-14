@@ -27,13 +27,13 @@ export class Pricing extends CommonEntity {
   @Column({ enum: PricingUnits, default: PricingUnits.Cubic_Meter })
   units: PricingUnits;
 
-  @Column({ type: 'decimal', default: 0, precision: 2 })
+  @Column({ type: 'decimal', default: 0, precision: 10, scale: 2 })
   discrepancy: number;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   supplierPrice: number;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   sellingPrice: number;
 
   @Column({ type: Boolean, default: false })

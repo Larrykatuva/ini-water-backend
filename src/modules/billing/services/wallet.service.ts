@@ -85,7 +85,7 @@ export class WalletService extends EntityService<Wallet> {
       currency: payload.currency,
       name: payload.name,
       number: wallet.number,
-      walletId: wallet.id,
+      walletId: parseInt(wallet.number),
     });
 
     return { message: 'Wallet registered successfully.' };

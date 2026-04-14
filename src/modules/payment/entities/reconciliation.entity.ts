@@ -22,14 +22,17 @@ export class Reconciliation extends CommonEntity {
   @Column({ type: Date })
   date: Date;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   expectedAmount: number;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   actualAmount: number;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   deficitAmount: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  maxDecimalAmount: number;
 
   @ManyToOne(() => Account, (account: Account) => account.id)
   account: Account;

@@ -6,6 +6,7 @@ import {
 } from '../entities/organization.entity';
 import { UserResDto } from '../../authentication/dtos/user.dtos';
 import { CommonDto } from '../../shared/dtos/shared.dto';
+import { NotificationChannel } from '../entities/account.entity';
 
 export class OrganizationReqDto {
   @ApiProperty({ type: String })
@@ -69,4 +70,12 @@ export class AccountResDto extends CommonDto {
 
   @ApiProperty({ type: Boolean })
   isStaff: boolean;
+}
+
+export class AccountNotificationReqDto {
+  @ApiProperty({ enum: NotificationChannel })
+  channel: NotificationChannel;
+
+  @ApiProperty({ type: Boolean })
+  enabled: boolean;
 }
