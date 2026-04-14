@@ -106,7 +106,7 @@ export class AuthController {
   @Post('google/code')
   @ResponsePipe(LoginResDto, HttpStatus.OK)
   async processGoogleCode(@Body() payload: AuthCodeReqDto) {
-    return await this.authService.googleAuth(payload.code);
+    return await this.authService.googleAuth(payload);
   }
 
   @Post('refresh-token')

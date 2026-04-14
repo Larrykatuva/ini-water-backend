@@ -3,6 +3,7 @@ import { CommonEntity } from '../../shared/entites/common.entity';
 import { Organization } from '../../onboarding/entities/organization.entity';
 import { Account } from '../../onboarding/entities/account.entity';
 import { Pricing } from './pricing.entity';
+import { Station } from '../../onboarding/entities/station.entity';
 
 @Entity()
 export class Reading extends CommonEntity {
@@ -13,12 +14,15 @@ export class Reading extends CommonEntity {
   )
   organization: Organization;
 
+  @ManyToOne(() => Station, (station: Station) => station.id, { onDelete: 'CASCADE'})
+  station: Station;
+
   @ManyToOne(() => Pricing, (pricing: Pricing) => pricing.id, {
     onDelete: 'CASCADE',
   })
   pricing: Pricing;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   volumeSold: number;
 
   @Column({ type: Date })

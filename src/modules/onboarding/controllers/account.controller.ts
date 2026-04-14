@@ -1,16 +1,21 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
   NotFoundException,
   Param,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { AccountService } from '../services/account.service';
 import { PaginatedResponsePipe } from '../../shared/pipes/paginated-response.pipe';
-import { AccountResDto } from '../dtos/organization.dto';
+import {
+  AccountNotificationReqDto,
+  AccountResDto,
+} from '../dtos/organization.dto';
 import { SearchFields } from '../../shared/pipes/search-fields.pipe';
 import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
 import { Account } from '../entities/account.entity';
@@ -21,6 +26,7 @@ import {
 import { User } from '../../authentication/entities/user.entity';
 import { PaginationDecorator } from '../../shared/decorators/pagination.decorator';
 import type { DefaultPagination } from '../../shared/dtos/shared.dto';
+import { MessageResDto } from '../../shared/dtos/shared.dto';
 import { QueryDecorator } from '../../shared/decorators/query.decorator';
 import { OrderingDecorator } from '../../shared/decorators/ordering.decorator';
 import { deepMerge } from '../../shared/services/utility.service';
@@ -101,5 +107,14 @@ export class AccountController {
       deepMerge(query, { user: { id: user.id } }),
       { order: ordering, relations: { user: true, organization: true } },
     );
+  }
+
+  @Patch('account/:id')
+  @ResponsePipe(MessageResDto, HttpStatus.OK)
+  async updateAccount(
+    @Body() payload: AccountNotificationReqDto,
+    @Param('id') id: number,
+  ): Promise<MessageResDto> {
+    return await this.accountService.updateAccount(id, payload);
   }
 }

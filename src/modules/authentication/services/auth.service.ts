@@ -1,6 +1,7 @@
 import { UserService } from './user.service';
 import { CodeService } from './code.service';
 import {
+  AuthCodeReqDto,
   LoginReqDto,
   LoginResDto,
   RegisterReqDto,
@@ -304,8 +305,13 @@ export class AuthService {
     return { message: 'Profile uploaded successfully' };
   }
 
-  async googleAuth(code: string): Promise<MessageResDto | LoginResDto> {
-    const googleInfo = await this.googleService.getUserInfo(code);
+  async googleAuth(
+    payload: AuthCodeReqDto,
+  ): Promise<MessageResDto | LoginResDto> {
+    const googleInfo = await this.googleService.getUserInfo(
+      payload.code,
+      payload.device,
+    );
 
     let user = await this.userService.filter({ email: googleInfo.email });
 

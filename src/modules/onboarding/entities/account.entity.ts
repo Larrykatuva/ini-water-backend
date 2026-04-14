@@ -9,6 +9,12 @@ export enum AccountStatus {
   REJECTED = 'Rejected',
 }
 
+export enum NotificationChannel {
+  Phone = 'Phone',
+  Email = 'Email',
+  App = 'App',
+}
+
 @Entity()
 export class Account extends CommonEntity {
   @ManyToOne(
@@ -34,4 +40,13 @@ export class Account extends CommonEntity {
 
   @Column({ type: Boolean, default: false })
   isNgo: boolean;
+
+  @Column({ type: Boolean, default: true })
+  allowEmailNotifications: boolean;
+
+  @Column({ type: Boolean, default: true })
+  allowPhoneNotifications: boolean;
+
+  @Column({ type: Boolean, default: true })
+  allowApplicantNotifications: boolean;
 }

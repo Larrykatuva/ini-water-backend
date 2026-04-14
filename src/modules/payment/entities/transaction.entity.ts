@@ -50,10 +50,10 @@ export class Transaction extends CommonEntity {
   @ManyToOne(() => Provider, (provider: Provider) => provider.id)
   provider: Provider;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
 
-  @Column({ type: 'decimal', precision: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   fees: number;
 
   @ManyToOne(() => Station, (station: Station) => station.id, {

@@ -26,6 +26,8 @@ import { Reading } from '../modules/billing/entities/reading.entities';
 import { Settlement } from '../modules/billing/entities/settlement.entity';
 import { KycStatus } from '../modules/onboarding/entities/kycStatus.entity';
 import { Wallet } from '../modules/billing/entities/wallet.entity';
+import { Transaction } from '../modules/payment/entities/transaction.entity';
+import { Reconciliation } from '../modules/payment/entities/reconciliation.entity';
 
 /**
  * DatabaseConfig class for configuring a read-only PostgreSQL database connection.
@@ -70,6 +72,8 @@ class DatabaseConfig implements TypeOrmOptionsFactory {
         Settlement,
         KycStatus,
         Wallet,
+        Transaction,
+        Reconciliation,
       ],
       synchronize: true,
     };

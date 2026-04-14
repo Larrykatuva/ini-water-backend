@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
-import { AuthDevice } from '../dtos/auth.dtos';
+import { AuthCodeReqDto, AuthDevice } from '../dtos/auth.dtos';
 
 @Injectable()
 export class GoogleService {
@@ -35,13 +35,16 @@ export class GoogleService {
     });
   }
 
-  async getUserInfo(code: string): Promise<TokenPayload> {
+  async getUserInfo(code: string, device: AuthDevice): Promise<TokenPayload> {
     try {
-      const { tokens } = await this.client.getToken(code);
-      this.client.setCredentials(tokens);
+      const id_token = code;
+      if (device === AuthDevice.Web) {
+        const { tokens } = await this.client.getToken(code);
+        this.client.setCredentials(tokens);
+      }
 
       const ticket = await this.client.verifyIdToken({
-        idToken: tokens.id_token as string,
+        idToken: id_token,
         audience: this.configService.get<string>('GOOGLE_AUTH_CLIENT_ID'),
       });
 
