@@ -5,6 +5,7 @@ import { Country } from './country.entity';
 export enum ProviderTypes {
   Bank = 'Bank',
   Telco = 'Telco',
+  Fintech = 'Fintech',
 }
 
 @Entity()

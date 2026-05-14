@@ -19,7 +19,7 @@ export class TokenResDto {
   expires_in: number;
 }
 
-export class DataDto {
+export class MobileDataDto {
   @ApiProperty({ type: String })
   phone_number: string;
 
@@ -30,7 +30,15 @@ export class DataDto {
   code: string;
 }
 
-export class MobileReqDto {
+export class WalletDataDto {
+  @ApiProperty({ type: String })
+  wallet_from: string;
+
+  @ApiProperty({ type: String })
+  code: string;
+}
+
+export class PaymentReqDto<T> {
   @ApiProperty({ type: String })
   purpose: string;
 
@@ -52,8 +60,8 @@ export class MobileReqDto {
   @ApiProperty({ type: String })
   channel: string;
 
-  @ApiProperty({ type: DataDto })
-  data: DataDto;
+  @ApiProperty()
+  data: T;
 }
 
 export class TransactionResDto {
@@ -140,4 +148,27 @@ export class WalletResDto extends WalletReqDto {
 
   @ApiProperty({ type: String })
   id: number;
+}
+
+export enum ChargeType {
+  B2B_payout = 'B2B Payout',
+  Mobile_Collection = 'Mobile Collection',
+  B2C_Payout = 'B2C Payout',
+  Wallet_Transfer = 'Wallet Transfer',
+}
+
+export class ChargesReqDto {
+  @ApiProperty({ type: Number })
+  amount: number;
+
+  @ApiProperty({ type: String })
+  transaction_type: string;
+}
+
+export class ChargesResDto extends ChargesReqDto {
+  @ApiProperty({ type: Number })
+  fee: number;
+
+  @ApiProperty({ type: String })
+  bearer: string;
 }

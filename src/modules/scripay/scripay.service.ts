@@ -2,13 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CacheService } from '../shared/services/cache.service';
 import {
-  MobileReqDto,
+  ChargesReqDto,
+  ChargesResDto,
+  MobileDataDto,
+  PaymentReqDto,
   ProfileResDto,
   StatusReqDto,
   StatusResDto,
   TokenReqDto,
   TokenResDto,
   TransactionResDto,
+  WalletDataDto,
   WalletReqDto,
   WalletResDto,
 } from './scripay.dto';
@@ -16,6 +20,7 @@ import {
   RequestContentType,
   RequestService,
 } from '../shared/services/request.service';
+import { parse } from 'ts-jest';
 
 @Injectable()
 export class ScripayService {
@@ -74,14 +79,32 @@ export class ScripayService {
     return data;
   }
 
+  async getFeeCharges(amount: string, type: string): Promise<ChargesResDto> {
+    const { data } = await this.requestService.postRequest<
+      ChargesReqDto,
+      ChargesResDto
+    >(
+      `${this.baseUrl}/gateway/initiate/charges`,
+      {
+        amount: parseFloat(amount),
+        transaction_type: type,
+      },
+      RequestContentType.JSON,
+      await this.getAccessToken(),
+    );
+
+    return data;
+  }
+
   async initiateStk(
     phoneNumber: string,
     orderId: string,
     amount: number,
     walletNumber: string,
+    relativeUrl: string,
   ): Promise<TransactionResDto> {
     const { data } = await this.requestService.postRequest<
-      MobileReqDto,
+      PaymentReqDto<MobileDataDto>,
       TransactionResDto
     >(
       `${this.baseUrl}/gateway/initiate/collection`,
@@ -89,8 +112,9 @@ export class ScripayService {
         purpose: 'payment',
         order_id: orderId,
         amount: amount,
-        description: 'Inibyte float topup',
-        callback_url: this.configService.get<string>('SCRIPAY_CALLBACK'),
+        description: 'Inibyte water collection',
+        callback_url:
+          this.configService.get<string>('SCRIPAY_CALLBACK') + relativeUrl,
         wallet: walletNumber,
         channel: 'Mpesa',
         data: {
@@ -98,6 +122,81 @@ export class ScripayService {
           account_name: 'Inibyte',
           code: '2001',
         },
+      },
+      RequestContentType.JSON,
+      await this.getAccessToken(),
+    );
+
+    return data;
+  }
+
+  async initiateTransfer(
+    walletFrom: string,
+    walletTo: string,
+    amount: string,
+    orderId: string,
+  ): Promise<TransactionResDto> {
+    const { data } = await this.requestService.postRequest<
+      PaymentReqDto<WalletDataDto>,
+      TransactionResDto
+    >(
+      `${this.baseUrl}/gateway/initiate/p2p`,
+      {
+        purpose: 'payment',
+        order_id: orderId,
+        amount: parseFloat(amount),
+        callback_url:
+          this.configService.get<string>('SCRIPAY_CALLBACK') +
+          '/callback/settlement',
+        description: 'Inibyte water settlement',
+        wallet: this.configService.get<string>('SCRIPAY_SETTLEMENT_WALLET'),
+        channel: 'Wallet',
+        data: {
+          wallet_from: walletFrom,
+          code: '1001',
+        },
+      },
+      RequestContentType.JSON,
+      await this.getAccessToken(),
+    );
+
+    return data;
+  }
+
+  async initiatePayout(
+    walletFrom: string,
+    orderId: string,
+    amount: string,
+    phoneNumber?: string,
+    accountNumber?: string,
+    reference?: string,
+  ): Promise<TransactionResDto> {
+    const payload = {
+      code: '2001',
+    };
+    if (phoneNumber) {
+      payload['phone_number'] = phoneNumber;
+    } else {
+      payload['account_number'] = accountNumber;
+      if (reference) payload['account_ref'] = reference;
+    }
+
+    const { data } = await this.requestService.postRequest<
+      PaymentReqDto<object>,
+      TransactionResDto
+    >(
+      `${this.baseUrl}/gateway/initiate/payout`,
+      {
+        purpose: 'payment',
+        order_id: orderId,
+        amount: parseFloat(amount),
+        callback_url:
+          this.configService.get<string>('SCRIPAY_CALLBACK') +
+          '/callback/settlement',
+        description: 'Inibyte water settlement',
+        wallet: walletFrom,
+        channel: 'Paybill',
+        data: payload,
       },
       RequestContentType.JSON,
       await this.getAccessToken(),

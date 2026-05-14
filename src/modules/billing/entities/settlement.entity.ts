@@ -21,6 +21,13 @@ export enum Strategy {
   Manual = 'Manual',
 }
 
+export enum Destination {
+  Wallet = 'Wallet',
+  PhoneNumber = 'PhoneNumber',
+  Paybill = 'Paybill',
+  Till = 'Till',
+}
+
 @Entity()
 export class Settlement extends CommonEntity {
   @ManyToOne(
@@ -47,6 +54,9 @@ export class Settlement extends CommonEntity {
   })
   provider: Provider;
 
+  @Column({ enum: Destination, default: Destination.Wallet })
+  destination: Destination;
+
   @Column({ enum: Strategy, default: Strategy.Auto })
   strategy: Strategy;
 
@@ -61,4 +71,7 @@ export class Settlement extends CommonEntity {
 
   @Column({ type: Boolean, default: false })
   active: boolean;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  amount: number;
 }
