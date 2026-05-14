@@ -1,6 +1,13 @@
 import { ApiTags } from '@nestjs/swagger';
 import { SettlementService } from '../services/settlement.service';
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ResponsePipe } from '../../shared/pipes/response.pipe';
 import { SettlementReqDto, SettlementResDto } from '../dtos/settlement.dtos';
 import {
@@ -23,9 +30,11 @@ import { Settlement } from '../entities/settlement.entity';
 import { deepMerge } from '../../shared/services/utility.service';
 import { SearchFields } from '../../shared/pipes/search-fields.pipe';
 import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
+import { AuthGuard } from '../../authentication/guards/auth.guard';
 
 @ApiTags('Billing')
 @Controller('billing')
+@UseGuards(AuthGuard)
 export class SettlementController {
   constructor(private readonly settlementService: SettlementService) {}
 

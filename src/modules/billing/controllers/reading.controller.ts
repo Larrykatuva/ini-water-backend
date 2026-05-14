@@ -73,7 +73,10 @@ export class ReadingController {
     return await this.readingService.paginatedFilter(
       pagination,
       deepMerge(query, this.readingService.readingFilter(user, account)),
-      { order: ordering, relations: { organization: true, pricing: true } },
+      {
+        order: ordering,
+        relations: { organization: true, pricing: { station: true } },
+      },
     );
   }
 
@@ -86,6 +89,7 @@ export class ReadingController {
   ): Promise<Reading> {
     const reading = await this.readingService.filter(
       deepMerge({ id: id }, this.readingService.readingFilter(user, account)),
+      { relations: { organization: true, pricing: { station: true } } },
     );
     if (!reading) throw new BadRequestException('Reading not found');
 

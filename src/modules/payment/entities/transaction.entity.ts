@@ -35,6 +35,9 @@ export class Transaction extends CommonEntity {
   @Column({ type: String })
   accountNumber: string;
 
+  @Column({ type: String, nullable: true })
+  receiverAccount: string;
+
   @Column({ type: String })
   orderId: string;
 
@@ -79,4 +82,7 @@ export class Transaction extends CommonEntity {
 
   @Column({ enum: TransactionStatus, default: TransactionStatus.Pending })
   status: TransactionStatus;
+
+  @Column({ type: 'text', nullable: true })
+  narration: string;
 }

@@ -48,6 +48,15 @@ const providers: Partial<Provider>[] = [
     address: 'Westlands Nairobi',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkUm0fCxAYaupkwyaSFOVGU_ZDyrNKHOOPHA&s',
   },
+  {
+    type: ProviderTypes.Fintech,
+    name: 'Scripay Limited',
+    code: '2001',
+    swiftCode: '',
+    payBill: '',
+    address: 'Westlands Nairobi',
+    logo: 'https://scripay.com/assets/icons/mobile_logo.svg',
+  },
 ];
 
 export const providersSeeder = async (dataSource: DataSource) => {

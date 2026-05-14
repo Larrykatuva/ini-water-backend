@@ -18,7 +18,7 @@ export class GoogleService {
     this.logger = new Logger('GoogleService');
   }
 
-  getAuthUrl(device: AuthDevice): string {
+  getClient(device: AuthDevice): OAuth2Client {
     this.client = new OAuth2Client({
       clientId: this.configService.get<string>('GOOGLE_AUTH_CLIENT_ID'),
       clientSecret: this.configService.get<string>('GOOGLE_AUTH_CLIENT_SECRET'),
@@ -26,7 +26,12 @@ export class GoogleService {
         `AUTH_REDIRECT_URL_${device.toString().toUpperCase()}`,
       ),
     });
-    return this.client.generateAuthUrl({
+
+    return this.client;
+  }
+
+  getAuthUrl(device: AuthDevice): string {
+    return this.getClient(device).generateAuthUrl({
       access_type: 'offline',
       scope: [
         'https://www.googleapis.com/auth/userinfo.profile',
@@ -37,10 +42,13 @@ export class GoogleService {
 
   async getUserInfo(code: string, device: AuthDevice): Promise<TokenPayload> {
     try {
-      const id_token = code;
+      this.client = this.getClient(device);
+
+      let id_token = code;
       if (device === AuthDevice.Web) {
         const { tokens } = await this.client.getToken(code);
         this.client.setCredentials(tokens);
+        id_token = tokens.id_token as string;
       }
 
       const ticket = await this.client.verifyIdToken({

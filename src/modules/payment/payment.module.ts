@@ -10,6 +10,7 @@ import { TransactionService } from './services/transaction.service';
 import { TransactionController } from './controllers/transaction.controller';
 import { SettingsModule } from '../settings/settings.module';
 import { ScripayModule } from '../scripay/scripay.module';
+import { CallbackController } from './controllers/callback.controller';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { ScripayModule } from '../scripay/scripay.module';
     ScripayModule,
   ],
   providers: [TransactionService],
-  controllers: [TransactionController],
+  controllers: [TransactionController, CallbackController],
 })
 export class PaymentModule {}

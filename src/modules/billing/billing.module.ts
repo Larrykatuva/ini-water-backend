@@ -45,6 +45,6 @@ import { Transaction } from '../payment/entities/transaction.entity';
     SettlementController,
     WalletController,
   ],
-  exports: [WalletService, ReadingService],
+  exports: [WalletService, ReadingService, SettlementService],
 })
 export class BillingModule {}
