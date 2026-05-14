@@ -21,12 +21,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            sudo bash -c '
-              cd /var/www/inibyte/ini-water-backend &&
-              git pull origin main &&
-              npm install &&
-              npm run build &&
-              pm2 list &&
-              pm2 restart water &&
-              pm2 logs
-            '
+            export NVM_DIR="/root/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            cd /var/www/inibyte/ini-water-backend &&
+            git pull origin main &&
+            npm install &&
+            npm run build &&
+            pm2 restart water &&
+            pm2 logs --lines 50 --nostream
