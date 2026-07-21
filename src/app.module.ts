@@ -14,6 +14,7 @@ import { ScripayModule } from './modules/scripay/scripay.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { InfrastructureModule } from './modules/infrastracture/infrastructureModule';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     ScripayModule,
     BillingModule,
     PaymentModule,
+    InfrastructureModule,
   ],
 })
 export class AppModule {}

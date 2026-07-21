@@ -9,8 +9,8 @@ import { Role, SystemRoles } from '../entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { RoleReqDto, RoleUpdateDto } from '../dtos/roles.dto';
-import { MessageResDto } from '../../shared/dtos/shared.dto';
-import { FindOptionsWhere } from 'typeorm';
+import { DefaultPagination, MessageResDto } from '../../shared/dtos/shared.dto';
+import { FindOneOptions, FindOptionsWhere } from 'typeorm';
 import { Account } from '../../onboarding/entities/account.entity';
 import { User } from '../../authentication/entities/user.entity';
 import { AccountRoleService } from './accountRole.service';
@@ -20,6 +20,7 @@ import {
 } from '../dtos/accountRole.dto';
 import { AccountService } from '../../onboarding/services/account.service';
 import { AuthType } from '../entities/permission.entity';
+import { deepMerge } from '../../shared/services/utility.service';
 
 @Injectable()
 export class RoleService extends EntityService<Role> {
@@ -38,11 +39,14 @@ export class RoleService extends EntityService<Role> {
     return { organization: { id: account?.organization?.id } };
   }
 
-  async addNewRole(payload: RoleReqDto): Promise<MessageResDto> {
+  async addNewRole(
+    payload: RoleReqDto,
+    account: Account,
+  ): Promise<MessageResDto> {
     if (await this.filter({ name: payload.name }))
       throw new BadRequestException('Role already exists');
 
-    await this.save(payload);
+    await this.save({ organization: account.organization, ...payload });
 
     return { message: 'Role added successfully' };
   }
@@ -145,5 +149,25 @@ export class RoleService extends EntityService<Role> {
         role: role,
       });
     }
+  }
+
+  async rolePaginatedFilter(
+    user: User,
+    account: Account,
+    pagination: DefaultPagination,
+    filters?: FindOptionsWhere<Role>,
+    options?: FindOneOptions<Role>,
+  ): Promise<[Role[], number]> {
+    return await this.paginatedFilter(
+      pagination,
+      [
+        deepMerge<Role>(
+          filters as unknown as any,
+          this.roleFilter(user, account),
+        ),
+        deepMerge(filters as unknown as any, { type: AuthType.External }),
+      ],
+      { ...options, relations: { rolePermissions: { permission: true } } },
+    );
   }
 }
