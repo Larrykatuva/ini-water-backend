@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from '../../shared/entites/common.entity';
 import { AuthType } from './permission.entity';
 import { Organization } from '../../onboarding/entities/organization.entity';
+import { RolePermission } from './rolePermission.entity';
 
 /**
  * Default system role that are seeded on creation
@@ -36,4 +37,10 @@ export class Role extends CommonEntity {
 
   @Column({ type: Boolean, default: true })
   active: boolean;
+
+  @OneToMany(
+    () => RolePermission,
+    (rolePermission: RolePermission) => rolePermission.role,
+  )
+  rolePermissions: RolePermission[];
 }

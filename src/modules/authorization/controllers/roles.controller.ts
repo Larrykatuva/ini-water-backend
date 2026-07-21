@@ -30,7 +30,6 @@ import { OrderingFields } from '../../shared/pipes/ordering-fields.pipe';
 import { PaginationDecorator } from '../../shared/decorators/pagination.decorator';
 import { QueryDecorator } from '../../shared/decorators/query.decorator';
 import { OrderingDecorator } from '../../shared/decorators/ordering.decorator';
-import { deepMerge } from '../../shared/services/utility.service';
 import { User } from '../../authentication/entities/user.entity';
 
 @ApiTags('Authorization')
@@ -42,8 +41,11 @@ export class RolesController {
   @Post('roles')
   @ResponsePipe(MessageResDto, HttpStatus.CREATED)
   @AllowedPermissions(SetPermission.CreateRoles)
-  async createRole(@Body() payload: RoleReqDto): Promise<MessageResDto> {
-    await this.roleService.addNewRole(payload);
+  async createRole(
+    @Body() payload: RoleReqDto,
+    @RequestUserAccount() account: Account,
+  ): Promise<MessageResDto> {
+    await this.roleService.addNewRole(payload, account);
     return <MessageResDto>{
       success: true,
       message: 'Role added successfully.',
@@ -61,9 +63,11 @@ export class RolesController {
     @RequestUser() user: User,
     @RequestUserAccount() account: Account,
   ): Promise<[Role[], number]> {
-    return await this.roleService.paginatedFilter(
+    return await this.roleService.rolePaginatedFilter(
+      user,
+      account,
       pagination,
-      deepMerge(query, this.roleService.roleFilter(user, account)),
+      query,
       ordering,
     );
   }

@@ -43,9 +43,10 @@ class DatabaseConfig implements TypeOrmOptionsFactory {
    * @returns TypeOrmModuleOptions - Database connection options.
    */
   createTypeOrmOptions(): TypeOrmModuleOptions {
+    console.log();
     return {
       type: 'postgres',
-      host: this.configService.get<string>('DBL_HOST'),
+      host: this.configService.get<string>('DB_HOST'),
       port: this.configService.get<number>('DB_PORT'),
       username: this.configService.get<string>('DB_USER'),
       password: this.configService.get<string>('DB_PASSWORD'),
